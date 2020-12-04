@@ -1,0 +1,206 @@
+\documentclass[12pt]{report}
+\usepackage{balance}			                    % proper column balancing 
+\usepackage{cite}			                        % well-formed numeric citations
+\usepackage{epsfig}			                        % add support for `EPS' figures
+\usepackage{epstopdf}			                    % automatic `EPS' to `PDF' conversion
+\usepackage[T1]{fontenc}		                    % enable `Type 1' fonts
+\usepackage[pagebackref = false, pdftex]{hyperref}	% add support for hypertext marks
+\usepackage{graphicx}			                    % add support for graphics
+\usepackage{listings}			                    % add support for source code listings
+\usepackage{mathptmx}			                    % use `Times' as the default font
+\usepackage{subfigure}			                    % add support for `subfloats'
+\usepackage{tikz}			                        % add support for custom graphics
+\usetikzlibrary{calc} 
+\usepackage{verbatim}	                            % better `verbatim'
+\usepackage{xcolor}			                        % add support for color names
+\usepackage{xspace}			                        % proper macro spacing
+\usepackage{mdframed}
+\usepackage{minitoc}								% local table of content
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left = 3.5cm,
+    top = 2.5cm,
+    right = 2.5cm,
+    bottom = 3.0cm
+}
+
+\usepackage[titletoc]{appendix}
+
+% Font size and spacing of sections chapters
+\usepackage{titlesec}
+\titlespacing*{\chapter}{0pt}{0pt}{30pt}
+\titleformat*{\section}{\large\bfseries} %14.4pt
+\titleformat*{\subsection}{\normalsize\bfseries} %12pt
+\titleformat{\chapter}[display]
+{\normalfont%
+    \LARGE %20.74pt
+    \bfseries}{\chaptertitlename\ \thechapter}{20pt}{%
+    \LARGE %20.74pt
+}
+
+% path of figures
+\graphicspath{{./figures/} }
+
+% name, title, keywords
+\def\pname{webFuzz\xspace}
+\def\ptitle{\pname: Implementation of a Gray-box Fuzzing Tool for Web Applications}
+\def\pkeywords{keyword1, keyword2}
+
+% comment out the following line to disable comments in text
+% \newcommand{\commentsenabled}{X}
+% comment commands
+\ifdefined\commentsenabled
+\newcommand{\el}[1]{\textbf{\color[rgb]{1,0,0} elathan: #1}}
+\newcommand{\mac}[2]{\textbf{\color[rgb]{0,0,1} marcos: #1}}
+\else
+\newcommand{\el}[1]{}
+\newcommand{\mac}[2]{}
+\fi
+
+% listings setup
+\lstset{
+	backgroundcolor	= \color{white},
+	basicstyle	= \scriptsize,
+	breaklines	= true,
+	captionpos	= b,
+	commentstyle	= \color{gray}\ttfamily,
+	frame		= lines, 
+	language	= C++, 
+	numbers		= left,
+	tabsize		= 2,
+	xleftmargin	= 6pt,
+}
+
+% hyperref setup
+\hypersetup{
+	unicode,
+	citecolor	= black,
+	colorlinks	= true,
+	filecolor	= black,
+	linkcolor	= black,
+	pagebackref	= true,
+	pdfkeywords	= {\pkeywords},
+	pdftitle	= {\ptitle},
+	urlcolor	= black,
+} 
+
+% checkmark
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+% hacks
+\newenvironment{code}{\small\verbatim}{\endverbatim\normalsize}
+\newcommand{\note}[1]{\noindent\textbf{\color{red}[#1]}}
+\newcommand{\commentout}[1]{}
+
+% custom macros
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\etc}{\emph{etc.}\xspace}
+
+\linespread{1.5} 
+% \setlength{\parskip}{1em}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+\vspace*{1cm}
+
+\textcolor{blue}{Thesis Dissertation}
+
+\vspace*{2cm}
+
+\textcolor{blue}{\Large{\textbf{\MakeUppercase{\ptitle{}}}}}
+
+\vspace*{3cm}
+
+\textcolor{blue}{\large{\textbf{Marcos Antonios Charalambous}}}
+
+\vspace*{2cm}
+\textcolor{blue}{\Large{\textbf{\MakeUppercase{University of Cyprus}}}}
+
+\vspace*{2cm}
+
+\includegraphics[width=0.2\textwidth]{ucy-logo.png}
+
+\vspace*{2cm}
+
+\textcolor{blue}{\Large{\textbf{\MakeUppercase{Computer Science Department}}}}
+
+\vspace*{4cm}
+
+\textcolor{blue}{\normalsize{December 2020}}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+\end{tikzpicture}
+\end{center}
+\end{titlepage}
+
+\begin{titlepage}
+
+\begin{center}
+\LARGE{\textbf{\MakeUppercase{University of Cyprus}}}
+
+\Large{\textbf{\MakeUppercase{Computer Science Department}}}
+
+\vspace*{5cm}
+
+\large{\textbf{\ptitle{}}}
+
+\vspace*{0.5cm}
+
+\large{\textbf{Marcos Antonios Charalambous}}
+
+\vspace*{5cm}
+
+\normalsize{Supervisor}
+
+\normalsize{Dr. Elias Athanasopoulos}
+
+\vspace*{3cm}
+
+\normalsize{Thesis submitted in partial fulfilment of the requirements for the award of degree of Bachelor in Computer Science at University of Cyprus}
+
+\vspace*{2cm}
+
+\normalsize{December 2020}
+\end{center}
+
+\end{titlepage}
+
+\pagenumbering{roman} % start roman page numbering
+
+\input{./acknowledgments}
+
+\newpage
+
+\input{./abstract}
+
+\dominitoc
+\tableofcontents
+\listoffigures
+\listoftables
+
+% outline
+\input{./introduction}
+\input{./background}
+\input{./strategies}
+\input{./implementation}
+\input{./evaluation}
+\input{./conclusion}
+
+% bibliography
+\bibliographystyle{abbrv}
+\balance
+\bibliography{./thesis}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+% Appendices
+\begin{appendices}
+	\titlespacing*{\chapter}{0pt}{0pt}{0pt}
+	\input{./appendices/appendix-a}
+	\input{./appendices/appendix-b}
+	\clearpage
+\end{appendices}
+% that's all
+\end{document}

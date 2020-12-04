@@ -1,0 +1,24 @@
+\section*{\LARGE{Abstract}}
+Testing software is a common practice for exposing unknown
+vulnerabilities in security-critical programs that can be 
+exploited with malicious intent. A bug-hunting method that has
+proven to be very effective is a technique called fuzzing. Specifically,
+this type of software testing has been in the form of fuzzing of native
+code, which includes subjecting the program to enormous amounts of
+unexpected or malformed inputs in an automated fashion. This is done
+to get a view of their overall robustness to detect and fix critical
+bugs or possible security loopholes. For instance, a program crash 
+when processing a given input may be a signal for memory-corruption 
+vulnerability or an SQL injection.
+
+Although fuzzing significantly evolved in analysing native code, web
+applications, invariably, have received limited attention, so far. This thesis 
+explores the technique of grey box fuzzing of web applications and the 
+construction of a fuzzing tool that will automate the process of discovering
+bugs in web applications.
+
+We design, implement and evaluate webFuzz, which is the first gray-box
+fuzzer for web applications. webFuzz leverages instrumentation for 
+successfully detecting reflective Cross-site Scripting (XSS) vulnerabilities
+faster than other black-box fuzzers. The functionality of webFuzz is 
+demonstrated using WordPress and Drupal.
