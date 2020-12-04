@@ -1,5 +1,4 @@
 \documentclass[12pt]{report}
-\usepackage[utf8]{inputenc}
 \usepackage{balance}			                    % proper column balancing 
 \usepackage{cite}			                        % well-formed numeric citations
 \usepackage{epsfig}			                        % add support for `EPS' figures
@@ -171,32 +170,32 @@
 
 \pagenumbering{roman} % start roman page numbering
 
-\input{./acknowledgments}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1.0em}
+
+\input{acknowledgements}
 
 \newpage
 
-\input{./abstract}
+\input{abstract}
 
 \dominitoc
 \tableofcontents
 \listoffigures
 \listoftables
 
-\setlength{\parindent}{0em}
-\setlength{\parskip}{1.0em}
-
 % outline
-\input{./introduction}
-\input{./background}
-\input{./strategies}
-\input{./implementation}
-\input{./evaluation}
-\input{./conclusion}
+\input{introduction}
+\input{background}
+\input{strategies}
+\input{implementation}
+\input{evaluation}
+\input{conclusion}
 
 % bibliography
 \bibliographystyle{abbrv}
 \balance
-\bibliography{./thesis}
+\bibliography{thesis}
 \addcontentsline{toc}{chapter}{Bibliography}
 
 % Appendices
