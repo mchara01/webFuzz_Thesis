@@ -1,7 +1,7 @@
 LATEX	= pdflatex
 BIBTEX	= bibtex
 
-TARGET	= thesis 
+TARGET	= thesis
 
 .PHONY: all clean
 
@@ -16,4 +16,5 @@ $(TARGET).pdf: *.tex $(TARGET).bbl
 	$(LATEX)	$(TARGET)
 
 clean:
-	$(RM) $(addprefix $(TARGET)., aux bbl blg ent log out pdf)
+	$(RM) $(addprefix $(TARGET)., aux bbl blg ent log out pdf maf mtc mtc[0-9]* synctex.gz fdb_latexmk fls)
+	rm -rf 'thesis.synctex(busy)'

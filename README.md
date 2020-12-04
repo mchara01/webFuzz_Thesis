@@ -1,1 +1,1 @@
-A template for making a thesis in LaTeX.
+webFuzz thesis in LaTeX.
