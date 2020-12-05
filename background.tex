@@ -3,28 +3,90 @@
 \minitoc
 \vspace*{1cm}
 
-In this section we provide background information, to give a
-detailed understanding about this thesis. First,we briefly discuss
-what fuzzing is and the various categories that constitute
-it. Then, we define what a Cross-Site scripting bug is in web
-applications, and elaborate on an example regarding this
-vulnerability.
+In this section we provide background information, to give a detailed understanding about this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate on an example regarding this vulnerability. Then,we briefly discuss what fuzzing is and the various categories that constitute it. instrumentation, concurrency, docker
+
+\section{Web Application Bugs}
+The internet has been growing exponentially since its inception. With over 1 billion
+pages currently on-line, it is safe to assume a secure future for those auditing
+Web applications for security. However, writing web application can be hard. Every significant web application, especially large-scale ones that have thousands of lines of code, have bugs in them. Even the simplest ones can be the root of irreparable damage when they are exploited by attackers with malicious intentions. In fact, web application vulnerabilities account for the majority of the vulnerabilities reported in the Common Vulnerabilities and Exposures database ~\cite{cve}. The OWASP Top 10 represents a broad consensus about the most critical security risks to web applications~\cite{owasp2017}. One of the most pressing security problems on the Internet, according to the aforementioned list, is Cross-Site Scripting, also known as XSS.
+
+XSS flaws occur whenever an application includes untrusted data in its web page responses without validating or escaping them first. As a result these untrusted data can get executed which can in turn hijack the browser, deface the web site, redirect the user to dangerous sites and many other attacks. Some XSS types include Reflected(aka Non-Persistent or Type II), Stored (Persistent or Type I) and DOM-based(Type-0).
+Reflected XSS ~\cite{rxss_def} vulnerabilities arise when data is copied from a request and echoed into the application’s immediate response whereas in Stored XSS vulnerabilities the malicious payload is firstly stored in storage such a database and is only later outputted by an unsuspecting query.
+Currently webFuzz focuses in detecting bugs that can lead to Reflected Cross-Site Scripting, which is among the most common of XSS attacks.
+
+% CLEAN THE REST
+ 
+
+That means the site must accept input
+and then attempt to display it without filtering for HTML tags and/or (Java/other)-
+script code. 
+The desired data might be the victim’s login cookie, and the method of coercion might be a spoofed e-mail from the site’s admin. The collection mechanism might be a bogus website designed to collect such data. Once this is all ready, the attacker sends the victim the e-mail with the XSS link. If the victim clicks on the link, the attacker will now have a cookie since the script code, say JavaScript, will be executed in the victim’s Web browser. This code may send the contents of the victim’s cookies (including session IDs) to the attacker. Such attacks could be automated to phish the masses on the vulnerable site.
+
+There are two main types of XSS vulnerabilities, reflected and stored. The
+scenario described above is of the reflected variety. Reflected XSS vulnerabilities
+dynamically execute scripting language code included with a request. In the above
+case, the code to send the victim’s login cookie would have been included in the
+particular link sent to the victim. It is called reflected because the malicious code is
+sent by the victim by following the link to the vulnerable server, which then reflects
+it back to the victim’s browser for execution. This code then runs in the context of
+the trusted site. The other type of attack is called a stored XSS vulnerability. In this
+case, the vulnerable Web application is designed in such a way that the user input is
+permanently stored on the server and displayed (and executed) by any viewer to that
+page. Examples might be Web forums or blog comments. This type is particularly
+nasty since any visitor to the site can be compromised.
+
+Defeating XSS attacks is similar to defending against other types of code injection.
+The input must be sanitized. User input containing HTTP code needs to be escaped or encoded so that it will not execute. Additional, systemwide measures
+such as Content Security Policy may be set as well to eliminate XSS attacks.
+
+Nevertheless, flaws such as buffer overflows
+or cross-site scripting issues comprise a majority of security incidents, and malicious
+hackers abuse them on a daily basis. 
+
+It is uncommon that anyone actually exploits
+a flaw in the design of a security mechanism, partly because those techniques are
+today based on industry-proven reusable libraries. For example, very few people will
+implement their own encryption algorithm. In general, it is a very bad idea to implement
+your own security library, as you are almost doomed to fail in your attempt.
+This is another example in which it doesn't make sense to reinvent the wheel.
+In software development, quality assurance practices are responsible for the
+discovery and correction of these types of flaws created during the implementation
+and design of the software.
 
 \section{Fuzzing}
-Software testing is a promising technique for discovering
-unknown vulnerabilities in programs. In particular, software
-testing has been realized in the form of fuzzing of native code,
-where software is exercised using a vast amount of inputs
-for inferring if any of them introduces security-related side
-effects. A fuzzer can be categorized in relation to
-its awareness of the program structure as black-, white-, or
-grey-box.
-\section{Web Application Bugs}
+A promising technique for discovering unknown vulnerabilities in
+programs and web applications proven to be very effective, is a technique called fuzzing ~\cite{fuzzing_def}.
+With this quality assurance technique, software is exercised using a vast amount of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
 
+A black-box fuzzer treats the program as a black box and is unaware of
+internal program structure. It conducts its test on the target through external
+interfaces and produces random inputs using no information of the target's underlying structure. Hence,  black-box fuzzers are only able to scratch the surface usually and expose "shallow" bugs. ~\cite{fuzzing_owasp}
+A white-box fuzzer infers source code knowledge, such as source code auditing, to reveal
+flaws in the software. It leverages program analysis to systematically
+increase code coverage or to reach certain critical program locations. Program analysis can be based on either static or dynamic analysis, or their combination ~\cite{program_analysis_book}. They may also leverage symbolic execution in order to derive what inputs cause each part of a program to execute ~\cite{symbolic_exe}. Therefore, they can be very effective at exposing bugs that hide deep in the program. By studying the application code, you may be able to detect optional or proprietary features, which should be tested as well.
+A fuzzer is considered gray-box when it leverages instrumentation rather than program analysis to glean information about the coverage of a generated input from the program it tries to fuzz. In this thesis we explore gray-box fuzzing, which is a combination of both the white-box and black-box approaches since it uses the internals of the software to assist in generating better test cases.
 
 \section{Instrumentation}
+Typically, a fuzzer is considered more effective if it achieves a higher degree of code coverage. 
+Unlike standard fuzzing techniques, which randomly change parts of the input file with little or no information about the underlying syntactic structure of the file
 code coverage
-
+ ways such methods could be combined to achieve
+slightly better results. For example, we might analyze the source to create better
+black-box tests. Or, if we instrument the source code while our black-box tests are
+running, we could easily calculate code coverage. This could be called white-box
+fuzzing, or gray-box testing.
+Fully dumb
+fuzzing results in lower code coverage, and fully smart (i.e., no invalid data or
+options) will be completely RFC compliant and uncover no bugs. In general,
+fuzzers shoot for the area that resides somewhere in-between. Intelligence costs
+more to create. But an element of randomness could lead to corners determinism
+might miss.
+Another factor to consider here is the target under test. Typically, totally random
+data sent to a network server will not find bugs, but flipping a few bytes in files
+has been proved very effective. Start easy and work up to more intelligent fuzzing.
+mutation-based
+fuzzer, might actively see the code paths executed in the target and make adjustments
+accordingly, which is very smart. EFS and AFL do exactly this
 \section{Concurrency}
 
 \section{Docker}
