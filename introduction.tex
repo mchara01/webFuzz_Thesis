@@ -14,6 +14,24 @@ The name comes from modem applications’ tendency to fail due
 to random input caused by line noise on fuzzy telephone lines.
 
 
+Numerous fuzzers have been developed in the past few
+years that try to optimize the fuzzing process by proposing
+various methodologies [7, 8, 20, 21, 35, 42, 46]. For instance,
+most of the fuzzers take advantage of instrumentation on
+the source or binary level. That is, inserting code to the
+program in order to receive feedback when a code block gets
+triggered and try to adjust the generated inputs to improve
+code coverage. Others utilize concolic/symbolic execution
+in order to extract useful information about the program
+and use that information for improving the input generation
+process [20, 21, 46]. However, all these fuzzers are currently
+targeted towards finding vulnerabilities in native code, while
+web applications have received limited attention.
+
+
+mutation-based fuzzer, might actively see the code paths executed in the target and make adjustments accordingly, which is very smart. EFS and AFL do exactly this
+
+
 % NEW SECTION
 \section{Motivation}
 

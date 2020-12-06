@@ -3,60 +3,49 @@
 \minitoc
 \vspace*{1cm}
 
-In this section we provide background information, to give a detailed understanding about this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate on an example regarding this vulnerability. Then,we briefly discuss what fuzzing is and the various categories that constitute it. instrumentation, concurrency, docker
+In this section we provide background information, to give a detailed understanding about various key points regarding this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate on an example regarding this vulnerability. Then, we briefly discuss what fuzzing is and the various categories that constitute it and continue on how instrumentation helps when used during gray box fuzzing. After, we continue discussing the concept of concurrency in Python and we close with the containerization of services using Docker.
 
 \section{Web Application Bugs}
-The internet has been growing exponentially since its inception. With over 1 billion
-pages currently on-line, it is safe to assume a secure future for those auditing
-Web applications for security. However, writing web application can be hard. Every significant web application, especially large-scale ones that have thousands of lines of code, have bugs in them. Even the simplest ones can be the root of irreparable damage when they are exploited by attackers with malicious intentions. In fact, web application vulnerabilities account for the majority of the vulnerabilities reported in the Common Vulnerabilities and Exposures database ~\cite{cve}. The OWASP Top 10 represents a broad consensus about the most critical security risks to web applications~\cite{owasp2017}. One of the most pressing security problems on the Internet, according to the aforementioned list, is Cross-Site Scripting, also known as XSS.
+The internet has been growing exponentially since its inception. Although there are over 1 billion pages currently on-line, writing a web application that it is secure from any available vulnerability, can be extremely hard. Every significant web application, especially large-scale that are composed with thousands of lines of code, have bugs in them. Even the simplest ones can be the root of irreparable damage when they are exploited by attackers with malicious intentions. In fact, web application vulnerabilities account for the majority of the vulnerabilities reported in the Common Vulnerabilities and Exposures database ~\cite{cve}. The OWASP Top 10 represents a broad consensus about the most critical security risks to web applications~\cite{owasp2017}. One of the most pressing security problems on the Internet, according to the aforementioned list, is Cross-Site Scripting, also known as XSS.
 
-XSS flaws occur whenever an application includes untrusted data in its web page responses without validating or escaping them first. As a result these untrusted data can get executed which can in turn hijack the browser, deface the web site, redirect the user to dangerous sites and many other attacks. Some XSS types include Reflected(aka Non-Persistent or Type II), Stored (Persistent or Type I) and DOM-based(Type-0).
-Reflected XSS ~\cite{rxss_def} vulnerabilities arise when data is copied from a request and echoed into the application’s immediate response whereas in Stored XSS vulnerabilities the malicious payload is firstly stored in storage such a database and is only later outputted by an unsuspecting query.
-Currently webFuzz focuses in detecting bugs that can lead to Reflected Cross-Site Scripting, which is among the most common of XSS attacks.
+XSS flaws occur whenever an application includes untrusted data in its web page responses without validating or escaping them first. In other words, the web application accepts input from the user and then attempts to display it without filtering for HTML tags or script code, such as JavaScript. As a result these untrusted data can get executed which can in turn hijack the browser, deface the web site, redirect the user to dangerous sites and many other attacks. Some XSS types include Reflected(aka Non-Persistent or Type II), Stored (Persistent or Type I) and DOM-based(Type-0).
 
-% CLEAN THE REST
- 
+Reflected XSS ~\cite{rxss_def} vulnerabilities arise when data is copied from a request and echoed into the application's immediate response. This way, scripting language code included within a request can be dynamically executed.
+In the case of Stored XSS vulnerabilities, the malicious payload is first permanently stored in storage such a database residing on a server, and is only later outputted by an unsuspecting query. Examples might be Web forums or blog comments. 
+Currently \pname focuses in detecting bugs that can lead to Reflected Cross-Site Scripting, which is among the most common of XSS attacks.
 
-That means the site must accept input
-and then attempt to display it without filtering for HTML tags and/or (Java/other)-
-script code. 
-The desired data might be the victim’s login cookie, and the method of coercion might be a spoofed e-mail from the site’s admin. The collection mechanism might be a bogus website designed to collect such data. Once this is all ready, the attacker sends the victim the e-mail with the XSS link. If the victim clicks on the link, the attacker will now have a cookie since the script code, say JavaScript, will be executed in the victim’s Web browser. This code may send the contents of the victim’s cookies (including session IDs) to the attacker. Such attacks could be automated to phish the masses on the vulnerable site.
+It is imperative that we understand what an RXSS (reflected XSS) bug typically looks like, in order to grasp the thesis' perspective. Most of the time RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
-There are two main types of XSS vulnerabilities, reflected and stored. The
-scenario described above is of the reflected variety. Reflected XSS vulnerabilities
-dynamically execute scripting language code included with a request. In the above
-case, the code to send the victim’s login cookie would have been included in the
-particular link sent to the victim. It is called reflected because the malicious code is
-sent by the victim by following the link to the vulnerable server, which then reflects
-it back to the victim’s browser for execution. This code then runs in the context of
-the trusted site. The other type of attack is called a stored XSS vulnerability. In this
-case, the vulnerable Web application is designed in such a way that the user input is
-permanently stored on the server and displayed (and executed) by any viewer to that
-page. Examples might be Web forums or blog comments. This type is particularly
-nasty since any visitor to the site can be compromised.
+\begin{lstlisting}[language=php, caption={Vulnerable login form.}, label={lst:vuln_login_sub}]
+<?php
+$username=$_POST['username'];
+$pwd=$_POST['password'];
+if (search_username($username)) {
+   if (match_username_password($username, $pwd)) {
+      // do normal login work
+   } else {
+      echo 'Wrong Password';
+   }
+} else {
+      echo 'Error' . $username . 'was not found.';
+}
+?>
+\end{lstlisting}
+
+The code above is faulty for two reasons. First, letting the user know that the username exists can help an attacker guess a set of correct credentials much faster, since only the password is left to find. But this design choice is not linked with Cross-Site Scripting. The source of the bug is on line 11 where the error message "the \$username was not found" is displayed. Because {\tt \$username} is a tainted variable that has not been sanitized, an attacker can inject malicious payload in this field which will freely be interpreted by the HTML parser according to whatever its content is. 
+{\tt Exploit:} A victim is fooled into submitting a form located in an attacker controlled website. This malicious form is
+designed to trigger the vulnerability found in the above login form. As soon as the form is submitted the vulnerable login
+page is opened with the XSS script executed in it. If the victim now tries to login, the XSS script can easily send the
+credentials to the attacker as well. 
 
 Defeating XSS attacks is similar to defending against other types of code injection.
-The input must be sanitized. User input containing HTTP code needs to be escaped or encoded so that it will not execute. Additional, systemwide measures
-such as Content Security Policy may be set as well to eliminate XSS attacks.
-
-Nevertheless, flaws such as buffer overflows
-or cross-site scripting issues comprise a majority of security incidents, and malicious
-hackers abuse them on a daily basis. 
-
-It is uncommon that anyone actually exploits
-a flaw in the design of a security mechanism, partly because those techniques are
-today based on industry-proven reusable libraries. For example, very few people will
-implement their own encryption algorithm. In general, it is a very bad idea to implement
-your own security library, as you are almost doomed to fail in your attempt.
-This is another example in which it doesn't make sense to reinvent the wheel.
-In software development, quality assurance practices are responsible for the
-discovery and correction of these types of flaws created during the implementation
-and design of the software.
+The input must be sanitized. User input containing HTTP code needs to be escaped or encoded in order to avoid its execution. Also, systemwide measures
+such as Content Security Policy(CSP) ~\cite{csp_def} may be set as well to eliminate or mitigate XSS attacks. Nevertheless, flaws such as buffer overflows or cross-site scripting issues comprise a majority of security incidents, and malicious hackers abuse them on a daily basis. 
 
 \section{Fuzzing}
 A promising technique for discovering unknown vulnerabilities in
 programs and web applications proven to be very effective, is a technique called fuzzing ~\cite{fuzzing_def}.
-With this quality assurance technique, software is exercised using a vast amount of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
+With this quality assurance technique, software is exercised using a vast amount of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned stress-testing process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
 
 A black-box fuzzer treats the program as a black box and is unaware of
 internal program structure. It conducts its test on the target through external
@@ -67,26 +56,32 @@ increase code coverage or to reach certain critical program locations. Program a
 A fuzzer is considered gray-box when it leverages instrumentation rather than program analysis to glean information about the coverage of a generated input from the program it tries to fuzz. In this thesis we explore gray-box fuzzing, which is a combination of both the white-box and black-box approaches since it uses the internals of the software to assist in generating better test cases.
 
 \section{Instrumentation}
-Typically, a fuzzer is considered more effective if it achieves a higher degree of code coverage. 
-Unlike standard fuzzing techniques, which randomly change parts of the input file with little or no information about the underlying syntactic structure of the file
-code coverage
- ways such methods could be combined to achieve
-slightly better results. For example, we might analyze the source to create better
-black-box tests. Or, if we instrument the source code while our black-box tests are
-running, we could easily calculate code coverage. This could be called white-box
-fuzzing, or gray-box testing.
-Fully dumb
-fuzzing results in lower code coverage, and fully smart (i.e., no invalid data or
-options) will be completely RFC compliant and uncover no bugs. In general,
-fuzzers shoot for the area that resides somewhere in-between. Intelligence costs
-more to create. But an element of randomness could lead to corners determinism
-might miss.
-Another factor to consider here is the target under test. Typically, totally random
-data sent to a network server will not find bugs, but flipping a few bytes in files
-has been proved very effective. Start easy and work up to more intelligent fuzzing.
-mutation-based
-fuzzer, might actively see the code paths executed in the target and make adjustments
-accordingly, which is very smart. EFS and AFL do exactly this
+Typically, a fuzzer is considered more effective if it achieves a higher degree of code coverage. This can be explained by the fact that to be able to trigger any given bug, the fuzzer must first execute the code where the bug lies, so increasing code coverage increases the changes of executing unsafe pieces of code where bugs may reside. As we mentioned in the previous section, using instrumentation may be the key yield a higher code coverage percentage.
+Currently available fuzzers for web applications act in a blackbox fashion [16](FIX THIS REFERENCE FROM PAPER); they just brute force the target with URLs that embed known web-attack payloads, with little or no information about the underlying structure of the target. 
+
+In contrast, \pname firstly instruments a web application by adding code that tracks all control flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded in the web application's HTTP response using custom headers or can be outputted to a shared file or memory region. On the other hand, the fuzzer starts sending requests to the target and analyses the responses in order to realize any interesting requests that would later help to improve the code coverage and as a result, trigger vulnerabilities nested deep in the web application's code.
+
+We instrument web applications for delivering feedback once
+they are fuzzed. As opposed to native applications, where
+several options exist for instrumenting their source or binary
+representation, we decide to instrument web applications by
+modifying the Abstract Syntax Tree (AST) of PHP files and then reverting it back to source code form. This in
+turn provides us feedback on the basic blocks that are visited during analysis. For altering the AST of PHP files, PHP-Parser ~\cite{nikicPhpParser} is used. 
+Instrumentation performed by \pname on our targeted web application is similar to how AFL instruments binaries but adapted to work in web applications. An elaborated approach of the instrumenting functionality provided by \pname is out of the scopes of this thesis.
+
 \section{Concurrency}
+Concurrency is defined as working on multiple things at the same time ~\cite{concurrency_realpython}. However, in Python this does not mean that they work in parallel, since only one core of the CPU is active at any given time. Instead, each task takes turns in occupying the core and executing their code. When a task is interrupted, the state of each task is stored, so it can be restarted right from the point where it left off. Concurrency is aimed to speed up the overall performance of input/output (I/O) bound problems, whose performance can be slowed down dramatically when they are obliged to wait often for I/O operation from some external resource. An example of such resource are requests on the internet or any kind of network traffic that can take several orders of magnitude longer than CPU instructions. An illustration of the above can be seen at Figure ~\ref{fig:concurrency_example}:
+
+\begin{figure}[ht]
+ \centering
+ \includegraphics[width=3.3in]{figures/concurrency_example.png}
+ \caption{Requests over the internet processed in concurrent fashion ~\cite{concurrency_realpython}.}
+ \label{fig:concurrency_example}
+\end{figure}
+
+More specifically in Python, concurrency can be expressed either through the Threading or AsyncIO(short for Asynchronous Input Output) ~\cite{asyncio} modules. Due to the infamous Global Interpreter Lock (GIL) ~\cite{gil_realpython} Python has, both AsyncIO and Threading are single-threaded, single-process design. Thus, there was no clear advantage of using the latter so AsyncIO was opted instead. Not to mention the complexity using threads and making the program thread-safe is added. In a few words, GIL makes sure there is only one thread running at any given time, thus making the use of multiple cores/processors with threads infeasible. 
+In the Python community, there is a general rule of thumb when it comes to I/O-bound problems; “Use asyncio when you can, threading when you must”.
+More info on the AsyncIO module and its use in the \pname implementation can be found in Section ~\ref{sec:implementation}
 
 \section{Docker}
+Docker containers provides developers the commodity of creating software locally with the knowledge that it will run identically regardless of the host environment ~\cite{using_docker_book}. Containers are an encapsulation of an application with its dependencies that share resources with the host OS, unlike Virtual Machines. During the evaluation, which can be seen in detailed in Section ~\ref{sec:evaluation}, a docker-compose YAML file was created to allow multiple containers to be initiated and managed at once, with a set of predefined configuration.
