@@ -3,8 +3,18 @@
 \minitoc
 \vspace*{1cm}
 
+In this section, we discuss the technical aspects, some of
+the key characteristics that constitute \pname{} and the way
+we deployed our WordPress application using containers to
+evaluate our fuzzer’s performance.
+
+
 % NEW SECTION
-\section{Selfish Miner}
+\section{Coding Standards}
+As Guido van Rossum(known as the creator of the Python programming language) said, "Code is read much more often than it is written". For this reason, throughout the course of this thesis, the aim was to write clear and readable code, as all professional tools do. For this, we enforced the latest conventions, as recommended from the Python community, in order to enforce maintainability, clarity, consistency, and generally, a foundation for good programming habits and practices. More specifically, our fuzzing tool is fully written in Python 3 using the PEP 8 ~\cite{python_pep8} coding style standard and, for documentation, the PEP 257 ~\cite{python_pep257} docstring convention was used so it will be clear and easy to read from programmers. Pylint ~\cite{pylint_module} was used to check for errors in Python code and try to enforce the aforementioned coding standards and look for code smells.
+
+Furthermore, to add on the good practises mentioned, unit tests where also created through which individual modules of the tool's source code are put under various tests to determine a particular unit's correctness and whether they are fit for use. More precisely, parts of the application's code are validated by using test cases that stress test the tool and ascertain the quality of your code by checking it against the expected response. For this part, popular python test frameworks where used like pytest ~\cite{pytest_module}, unittest ~\cite{unittest_module} and mock ~\cite{mock}. In the appendix, an example of unit testing for the parser module can be found.
+
 
 % NEW SECTION
 \section{Asyncio}
@@ -40,4 +50,3 @@ One example of white-box testing is called unit testing, which concentrates
 on testing each of the functions as you see them in the code.
 
 Logging is a module in the Python standard library that provides a richly-formatted log with a flexible filter and the possibility to redirect logs to other sources such as syslog or email.
-
