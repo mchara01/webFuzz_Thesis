@@ -15,6 +15,8 @@
 \usepackage{xcolor}			                        % add support for color names
 \usepackage{xspace}			                        % proper macro spacing
 \usepackage{mdframed}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{minitoc}								% local table of content
 \usepackage{geometry}
 \geometry{
@@ -190,13 +192,14 @@
 \input{architecture}
 \input{implementation}
 \input{evaluation}
-\input{futurework}
+\input{related-work}
+\input{future-work}
 \input{conclusion}
 
 % bibliography
 \bibliographystyle{abbrv}
 \balance
-\bibliography{thesis}
+\bibliography{./bibliography/thesis}
 \addcontentsline{toc}{chapter}{Bibliography}
 
 % Appendices

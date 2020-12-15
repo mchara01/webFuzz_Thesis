@@ -22,7 +22,7 @@ $username=$_POST['username'];
 $pwd=$_POST['password'];
 if (search_username($username)) {
    if (match_username_password($username, $pwd)) {
-      // do normal login work
+      // do normal login procedures
    } else {
       echo 'Wrong Password';
    }
