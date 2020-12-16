@@ -16,7 +16,7 @@ Currently \pname focuses in detecting bugs that can lead to Reflected Cross-Site
 
 It is imperative that we understand what an RXSS (reflected XSS) bug typically looks like, in order to grasp the thesis' perspective. Most of the time RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
-\begin{lstlisting}[language=php, caption={Vulnerable login form.}, label={lst:vuln_login_sub}]
+\begin{lstlisting}[language=PHP, caption={Vulnerable login form.}, numbersep=5pt, label={lst:vuln_login_sub}]
 <?php
 $username=$_POST['username'];
 $pwd=$_POST['password'];

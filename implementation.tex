@@ -23,6 +23,7 @@ In a brief summary, the concept of asyncio is that a single-threaded Python obje
 
 \begin{figure}[ht]
  \centering
+ \captionsetup{justification=centering}
  \includegraphics[width=4.4in]{figures/asyncio_process.jpg}
  \caption{AsyncIO mechanism; it provides a high-performance asynchronous frameworks for making our fuzzing requests ~\cite{asyncio_image_source}.}
  \label{fig:asyncio_image_source}
@@ -33,31 +34,54 @@ Communication with the target's web site is achieved with a blazingly fast async
 It is important to note here that note all available Python modules are compatible with asyncio. For instance, for our requests, we could not use the default and recommended Python's requests package, since it is built on top of {\tt urllib3 }, which in turn uses Python's http and socket modules. Socket operations are blocking and not awaitable which means Python would not like the await statement. However, more and more modules are becoming compatible with asyncio ~\cite{aiohttp}.
 
 \section{Parser}
-The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after of course the respective request was made. Each response contains the HTML document which is then parsed using the {\tt  Beautiful Soup} ~\cite{beautiful_soup} module in order to extract the form and anchor elements from it. These elements are useful as they can provide us with new URLs which translates to potentially new code paths and bugs to further explore and find. When found, they are added to the crawler's pending request list, and if they happen to be interesting (see Section ~\ref{sec:architecture}) they will also be fuzzed in the future. At this stage the HTML document is also checked for XSS vulnerabilities. The metadata that we store for each request, can tell us which XSS payloads were injected into it and lead to this vulnerability. If they happen to reside in the HTML document, which signal an RXSS vulnerability, a warning is triggered, incrementing the total number of XSS found and logging the related information. The document is also checked for Stored XSS vulnerabilities by scanning the document for all the XSS payloads that we have injected in all requests so far. The pseudocode for the parsing process can be seen at  ~\ref{alg:parser_pseudocode}
+The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after of course the respective request was made. Each response contains the HTML document which is then parsed using the {\tt  Beautiful Soup}~\cite{beautiful_soup} module in order to extract the form and anchor elements from it. These elements are useful as they can provide us with new URLs which translates to potentially new code paths and bugs to further explore and find. When found, they are added to the crawler's pending request list, and if they happen to be interesting (see Section ~\ref{sec:architecture}) they will also be fuzzed in the future. At this stage the HTML document is also checked for XSS vulnerabilities. The metadata that we store for each request, can tell us which XSS payloads were injected into it and lead to this vulnerability. If they happen to reside in the HTML document, which signal an RXSS vulnerability, a warning is triggered, incrementing the total number of XSS found and logging the related information. The document is also checked for Stored XSS vulnerabilities by scanning the document for all the XSS payloads that we have injected in all requests so far. A high-level pseudocode for the parsing process can be seen at Algorithm ~\ref{alg:parser_pseudocode}. As the pseudocode shows clearly, parsing relies heavily on the urllib.parse~\cite{urllib_parse} Python module. This module, and more precisely the urlparse method, is used for breaking the Uniform Resource Locator (URL) string up in components; such as addressing scheme, network location, path etc. An object is return that contains 6-item tuple with all the URL sub-fields. The reverse can also be achieve through the urlunparse method; a URL object can be converted into string.
 
 \begin{algorithm}
- \caption{Method for parsing a URL found}
+ 
+ \caption{Parsing new HTML documents method pseudocode.}
  \label{alg:parser_pseudocode}
  
  \begin{algorithmic}
-	 \STATE $urlObject \leftarrow currentUrl$
-	 \STATE $newUrlObject \leftarrow newUrlFound$
- 	 \IF{newUrlObject does not have a domain name}
- 		 \STATE $urlObject \leftarrow currentUrl$
- 	 \ENDIF
+	\STATE lookForXSS(HTML) \COMMENT{Increments global XSS counter if one is found.} 
+	\STATE $links \leftarrow set()$ 
+	\FOR{every form found in the HTML document}
+		 \IF{form does \NOT contain an action field}
+ 			\STATE $urlObject \leftarrow urllib.parse(callingNodeUrl)$
+		 \ELSE 
+ 			\STATE $urlObject \leftarrow urllib.parse(relativeToAbsolute(form.action))$
+		 \ENDIF
+		\STATE $parameters \leftarrow parseQueryString(urlObject.query)$ 
+		\STATE $urlString \leftarrow urllib.unparse(urlObject)$ 
+		\STATE $inputs \leftarrow dictionary()$ 
+		\FOR{every < input > element found in form}
+			\STATE $value \leftarrow input.get(value)$			 
+	 		\STATE $name \leftarrow input.get(name)$	
+	 		\STATE $inputs[name] \leftarrow append(value)$	 
+		\ENDFOR
+		\STATE $method \leftarrow form.get(method)$	
+		\STATE $Node \leftarrow createNode(parameters, urlString, inputs, method)$	
+		\STATE $links \leftarrow add(Node)$
+		\FOR{every < a > element found in form}
+			\STATE $anchor \leftarrow a.get(href)$			 
+		\ENDFOR
+		\STATE $Node \leftarrow createNode(parameters, urlString, inputs, method)$	
+		\STATE $links \leftarrow add(Node)$
+	\ENDFOR
+	\RETURN links
  \end{algorithmic}
+ 
 \end{algorithm}
 
 
 \section{Curses}
 
-
-grapse giaa to argparser, gia to readme me oles tis odigies p exei gia installation kai requirements.txt.
+grapse giaa to argparser, gia to readme me oles tis odigies p exei gia installation kai requirements.txt me ola ta exact version ton modules p xriazonte gia na trexi.
 
 Logging is a module in the Python standard library that provides a richly-formatted log with a flexible filter and the possibility to redirect logs to other sources such as syslog or email.
 
-\section{Multi-Container Deployment}
-aaa
+\section{Multi-Container Deployment / Methodology kalitera}
+barto sto evaluation
+
 
 \section{argparser}
 ccc
