@@ -69,19 +69,23 @@ The fuzzer's parsing module is responsible for extracting vital information duri
 	\ENDFOR
 	\RETURN links
  \end{algorithmic}
- 
 \end{algorithm}
 
+\section{Curses Interface}
+An textual user interfaces (TUI) for \pname{} has been created using the curses module which contains various information and essential statistics, gathered while our gray-box fuzzer is running. The curses library supplies a terminal-independent screen-painting and keyboard-handling facility for text-based terminals~\cite{curses}, such as the Linux console. The text editor nano is a good example of a curses application. As you can imagine, this functionality is not available for Windows, as the Windows version of Python does not include the curses module. So by running our fuzzing tool on a Windows based machine, regardless of the Command Line Interface (CLI) you opt to use, it will result in a crush. There are of-course ways to run \pname{} without this interface which will be elaborated in the next subsection. Although many may think this is an obsolete technology, it can prove to be quite valuable for Unix-based operating systems that do not provide any graphical support. The Python module, which is the one we utilise, is a fairly simple wrapper over the C functions provided by the first and original curses. A snapshot of the interface provided by webFuzz can be seen at Figure ~\ref{fig:curses_interface}. As the figure illustrates, statistics are divided in to three categories; namely the process statistics, the overall progress and the examining node details.
+As the fuzzing tools expands, more and more valuable information will be included on the interface.
 
-\section{Curses}
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=4.6in]{figures/curses.png}
+ \caption{A screenshot of the webFuzz interface. The interface is implemented using the Curses module.}
+ \label{fig:curses_interface}
+\end{figure}
 
-grapse giaa to argparser, gia to readme me oles tis odigies p exei gia installation kai requirements.txt me ola ta exact version ton modules p xriazonte gia na trexi.
+
+\section{Running webFuzz}
+For executing \pname{}, argparser and screenshot
+All necessary modules accompanied with their exact version needed to be installed for \pname{} to work smoothly are listed in a "requirements" text file. Other dependencies, executing and installing dependencies instructions can be found at the README.md file in the tool's repository.
 
 Logging is a module in the Python standard library that provides a richly-formatted log with a flexible filter and the possibility to redirect logs to other sources such as syslog or email.
-
-\section{Multi-Container Deployment / Methodology kalitera}
-barto sto evaluation
-
-
-\section{argparser}
-ccc
