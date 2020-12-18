@@ -10,9 +10,25 @@ The internet has been growing exponentially since its inception. Although there 
 
 XSS flaws occur whenever an application includes untrusted data in its web page responses without validating or escaping them first. In other words, the web application accepts input from the user and then attempts to display it without filtering for HTML tags or script code, such as JavaScript. As a result these untrusted data can get executed which can in turn hijack the browser, deface the web site, redirect the user to dangerous sites and many other attacks. Some XSS types include Reflected(aka Non-Persistent or Type II), Stored (Persistent or Type I) and DOM-based(Type-0).
 
-Reflected XSS ~\cite{rxss_def} vulnerabilities arise when data is copied from a request and echoed into the application's immediate response. This way, scripting language code included within a request can be dynamically executed.
+Reflected XSS ~\cite{rxss_def} vulnerabilities arise when arbitrary data is copied from a request and echoed into the application's immediate response. This way, scripting language code included within a request can be dynamically executed.
 In the case of Stored XSS vulnerabilities, the malicious payload is first permanently stored in storage such a database residing on a server, and is only later outputted by an unsuspecting query. Examples might be Web forums or blog comments. 
-Currently \pname focuses in detecting bugs that can lead to Reflected Cross-Site Scripting, which is among the most common of XSS attacks.
+\pname{} focuses in detecting both bugs that can lead to both Reflected or Stored Cross-Site Scripting, which are among the most common of XSS attacks. An illustration of latter can be seen at Figure ~\ref{lst:storedxss} and of the former at Figure ~\ref{lst:reflectedxss}. In both the illustrations, the attacker and victim is represented by \pname{}.
+
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=5.0in]{figures/storedXSS.png}
+ \caption{Illustration of Stored Cross-Site Scripting.}
+ \label{fig:storedxss}
+\end{figure}
+
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=5.0in]{figures/reflectedxss.png}
+ \caption{Illustration of Reflected Cross-Site Scripting.}
+ \label{fig:reflectedxss}
+\end{figure}
 
 It is imperative that we understand what an RXSS (reflected XSS) bug typically looks like, in order to grasp the thesis' perspective. Most of the time RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 

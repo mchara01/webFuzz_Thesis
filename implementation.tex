@@ -85,7 +85,13 @@ As the fuzzing tools expands, more and more valuable information will be include
 
 
 \section{Running webFuzz}
-For executing \pname{}, argparser and screenshot
-All necessary modules accompanied with their exact version needed to be installed for \pname{} to work smoothly are listed in a "requirements" text file. Other dependencies, executing and installing dependencies instructions can be found at the README.md file in the tool's repository.
+Running \pname{} is fairly simple. All necessary modules accompanied with their exact version needed to be installed for \pname{} to work smoothly, are listed in a "requirements" text file. Other dependencies, executing and installing dependencies instructions can be found at the README.md file in the tool's repository. A help menu that shows all available arguments in which \pname{} can run in, are shown at Figure ~\ref{fig:argparser_menu}. As you can see, arguments are separated in three categories; namely optional, required and positional. Optional arguments are extra functionalities that you do not have to include when running the tool whereas required and positional are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the argparse~\cite{argparse} Python module was used.
+Also, throughout the execution, logging is used as a means of tracking events that happen when the fuzzer runs. Logging is a module in the Python standard library that provides a richly-formatted log.
 
-Logging is a module in the Python standard library that provides a richly-formatted log with a flexible filter and the possibility to redirect logs to other sources such as syslog or email.
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=4.6in]{figures/argparser_menu.jpg}
+ \caption{\pname{} help menu includes all available arguments which we can use to run it with.}
+ \label{fig:argparser_menu}
+\end{figure}
