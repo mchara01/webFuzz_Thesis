@@ -14,22 +14,6 @@ Reflected XSS ~\cite{rxss_def} vulnerabilities arise when arbitrary data is copi
 In the case of Stored XSS vulnerabilities, the malicious payload is first permanently stored in storage such a database residing on a server, and is only later outputted by an unsuspecting query. Examples might be Web forums or blog comments. 
 \pname{} focuses in detecting both bugs that can lead to both Reflected or Stored Cross-Site Scripting, which are among the most common of XSS attacks. An illustration of latter can be seen at Figure ~\ref{lst:storedxss} and of the former at Figure ~\ref{lst:reflectedxss}. In both the illustrations, the attacker and victim is represented by \pname{}.
 
-\begin{figure}[ht]
- \centering
- \captionsetup{justification=centering}
- \includegraphics[width=5.0in]{figures/storedXSS.png}
- \caption{Illustration of Stored Cross-Site Scripting.}
- \label{fig:storedxss}
-\end{figure}
-
-\begin{figure}[ht]
- \centering
- \captionsetup{justification=centering}
- \includegraphics[width=5.0in]{figures/reflectedxss.png}
- \caption{Illustration of Reflected Cross-Site Scripting.}
- \label{fig:reflectedxss}
-\end{figure}
-
 It is imperative that we understand what an RXSS (reflected XSS) bug typically looks like, in order to grasp the thesis' perspective. Most of the time RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
 \begin{lstlisting}[language=PHP, caption={Vulnerable login form.}, numbersep=5pt, label={lst:vuln_login_sub}]
@@ -48,6 +32,23 @@ if (search_username($username)) {
 ?>
 \end{lstlisting}
 
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=5.0in]{figures/storedXSS.png}
+ \caption{Illustration of Stored Cross-Site Scripting.}
+ \label{fig:storedxss}
+\end{figure}
+
+\begin{figure}[ht]
+ \centering
+ \captionsetup{justification=centering}
+ \includegraphics[width=5.0in]{figures/reflectedxss.png}
+ \caption{Illustration of Reflected Cross-Site Scripting.}
+ \label{fig:reflectedxss}
+\end{figure}
+
+
 The code above is faulty for two reasons. First, letting the user know that the username exists can help an attacker guess a set of correct credentials much faster, since only the password is left to find. But this design choice is not linked with Cross-Site Scripting. The source of the bug is on line 11 where the error message "the \$username was not found" is displayed. Because {\tt \$username} is a tainted variable that has not been sanitized, an attacker can inject malicious payload in this field which will freely be interpreted by the HTML parser according to whatever its content is. 
 {\tt Exploit:} A victim is fooled into submitting a form located in an attacker controlled website. This malicious form is
 designed to trigger the vulnerability found in the above login form. As soon as the form is submitted the vulnerable login
@@ -60,7 +61,7 @@ such as Content Security Policy(CSP) ~\cite{csp_def} may be set as well to elimi
 
 \section{Fuzzing}
 A promising technique for discovering unknown vulnerabilities in
-programs and web applications proven to be very effective, is a technique called fuzzing ~\cite{fuzzing_def}.
+programs and web applications proven to be very effective, is a technique called fuzzing (or fuzz testing) ~\cite{fuzzing_def}. The technique was developed by Barton Miller et al. at the University of Wisconsin.
 With this quality assurance technique, software is exercised using a vast amount of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned stress-testing process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
 
 A black-box fuzzer treats the program as a black box and is unaware of
