@@ -98,7 +98,7 @@ Concurrency is defined as working on multiple tasks at the same time ~\cite{conc
  \label{fig:concurrency_example}
 \end{figure}
 
-More specifically in Python, concurrency can be expressed either through the Threading or AsyncIO(short for Asynchronous Input Output) ~\cite{asyncio} modules. Due to the infamous Global Interpreter Lock (GIL) ~\cite{gil_realpython} Python has, both AsyncIO and Threading are single-threaded, single-process design. Thus, there was no clear advantage of using the latter so AsyncIO was opted for instead. Not to mention the added complexity of using threads and making the program thread-safe. Briefly, GIL ensures there is only one thread running at any given time, thus making the use of multiple cores/processors with threads infeasible. 
+More specifically in Python, concurrency can be expressed either through the Threading or AsyncIO(short for Asynchronous Input Output) ~\cite{asyncio} modules. Due to the infamous Global Interpreter Lock (GIL) ~\cite{gil_realpython} Python has, both AsyncIO and Threading are single-threaded, single-process design. Thus, there was no clear advantage of using the latter so AsyncIO was opted for instead, although the initial plan was to use threading. Not to mention the added complexity of using threads and making the program thread-safe. Briefly, GIL ensures there is only one thread running at any given time, thus making the use of multiple cores/processors with threads infeasible. 
 In the Python community, there is a general rule of thumb when it comes to I/O-bound problems; “Use asyncio when you can, threading when you must”.
 More info on the AsyncIO module and its use in the \pname implementation can be found in Section ~\ref{sec:implementation}.
 
