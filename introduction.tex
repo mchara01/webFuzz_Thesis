@@ -3,6 +3,23 @@
 \minitoc
 \vspace*{1cm}
 
+This the first and introductory chapter of this thesis. Here we analyse what motivated me to start this project, any related work regarding fuzzing, the contribution that our fuzzing tool has and the outline of the topics of the rest of the chapters included in this thesis.
+
+% NEW SECTION
+\section{Motivation}
+Fuzzing is now recognised as an essential process for discovering hidden bugs in computer software. Automated software testing or fuzzing is a tried and tested method of generating or mutating inputs and passing them to programs in search of bugs. The spark in the fuzzing 'revolution' to discover bugs in software in an automated fashion has been precipitated with the introduction of AFL ~\cite{zalewski2015american}, a state-of-the-art fuzzer that produces feedback during fuzzing by leveraging instrumentation of the analysed program. By creating this \textit{feedback loop}, fuzzers can significantly improve their performance as they can determine whether an input is interesting, namely it triggers a new code path, and uses that input to produce other test cases.
+
+Software testing plays a vital role in the software development cycle because when vulnerabilities are present, they can have severe and irreparable consequences. By exploiting software bugs, adversaries can perform data breaches, install malicious malware or even take complete control of a device. Detecting bugs before they get exploited is possible while also being a demanding task. Mainly because bugs are triggered when an unexpected input is given to the program, something which is difficult to fully simulate through statically written unit tests. This is because unit tests usually revolve around expected inputs in order to test the intended functionality of code ~\cite{aschermann2019nautilus}.
+
+Although automated software testing has become an attractive field of research, it still has a long way to go, especially for web applications ~\cite{doupe2010johnny}. As the Internet infrastructure expands, more software written in native code is migrating to web applications. This attracts more malicious attacks on web applications. Hence, there is a strong need for the development of automated vulnerabilities scanners that target web applications.
+ 
+% NEW SECTION REPHRASE
+\section{Related Work}
+ Numerous fuzzers recently developed try to optimize the fuzzing process by proposing various methodologies ~\cite{godefroid2012sage, stephens2016driller, rawat2017vuzzer, aschermann2019nautilus, aschermann2019redqueen, hoffman2020Was, osterlund2020parmesan }. For instance, most of the fuzzers take advantage of instrumentation on the source or binary level. That is, inserting code to the program in order to receive feedback when a code block gets
+triggered and try to adjust the generated inputs to improve code coverage. Others utilize concolic/symbolic execution in order to extract useful information about the program and use that information for improving the input generation process ~\cite{stephens2016driller,godefroid2005dart,godefroid2012sage}. However, all these fuzzers are currently targeted towards finding vulnerabilities in native code, while web applications have received limited attention. More related work will be see again at Chapter ~\ref{relatedwork}.
+
+
+\section{Contributions}
 A highly automated testing technique that covers numerous boundary cases
 using invalid data (from files, network protocols, API calls, and other targets)
 as application input to better ensure the absence of exploitable vulnerabilities.
@@ -14,29 +31,11 @@ The name comes from modem applications’ tendency to fail due
 to random input caused by line noise on fuzzy telephone lines.
 
 
-Numerous fuzzers have been developed in the past few
-years that try to optimize the fuzzing process by proposing
-various methodologies [7, 8, 20, 21, 35, 42, 46]. For instance,
-most of the fuzzers take advantage of instrumentation on
-the source or binary level. That is, inserting code to the
-program in order to receive feedback when a code block gets
-triggered and try to adjust the generated inputs to improve
-code coverage. Others utilize concolic/symbolic execution
-in order to extract useful information about the program
-and use that information for improving the input generation
-process [20, 21, 46]. However, all these fuzzers are currently
-targeted towards finding vulnerabilities in native code, while
-web applications have received limited attention.
-
 
 mutation-based fuzzer, might actively see the code paths executed in the target and make adjustments accordingly, which is very smart. EFS and AFL do exactly this
 
 even google is very active in the industry of fuzzers https://github.com/google/oss-fuzz, atheris
-% NEW SECTION
-\section{Motivation}
 
-% NEW SECTION
-\section{Related Work}
 
 % NEW SECTION
 \section{Contributions}

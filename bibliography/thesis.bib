@@ -27,6 +27,23 @@ location = {Toronto, Canada},
 series = {CCS '18}
 }
 
+@inproceedings{duchene2014kameleonfuzz,
+author = {Duchene, Fabien and Rawat, Sanjay and Richier, Jean-Luc and Groz, Roland},
+title = {KameleonFuzz: Evolutionary Fuzzing for Black-Box XSS Detection},
+year = {2014},
+isbn = {9781450322782},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2557547.2557550},
+doi = {10.1145/2557547.2557550},
+booktitle = {Proceedings of the 4th ACM Conference on Data and Application Security and Privacy},
+pages = {3748},
+numpages = {12},
+keywords = {cross-site scripting, black-box security testing, fuzzing, evolutionary algorithm, taint inference, model inference},
+location = {San Antonio, Texas, USA},
+series = {CODASPY '14}
+}
+
 @inproceedings{coverage2014effectiveness,
 	author = {Laura Inozemtseva and Reid Holmes},
 	year = {2014},
@@ -40,6 +57,99 @@ series = {CCS '18}
   booktitle={Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security},
   pages={2329--2344},
   year={2017}
+}
+
+@inproceedings{aschermann2019nautilus,
+  title={NAUTILUS: Fishing for Deep Bugs with Grammars},
+  author={{Cornelius Aschermann et al.}},
+  booktitle={NDSS},
+  year={2019}
+}
+
+@inproceedings{aschermann2019redqueen,
+  title={REDQUEEN: Fuzzing with Input-to-State Correspondence},
+  author={{Cornelius Aschermann et al.}},
+  booktitle={NDSS},
+  volume={19},
+  pages={1--15},
+  year={2019}
+}
+
+@inproceedings{stephens2016driller,
+  title={Driller: Augmenting Fuzzing Through Selective Symbolic Execution},
+  author={Stephens, Nick and Grosen, John and Salls, Christopher and Dutcher, Andrew and Wang, Ruoyu and Corbetta, Jacopo and Shoshitaishvili, Yan and Kruegel, Christopher and Vigna, Giovanni},
+  booktitle={NDSS},
+  volume={16},
+  number={2016},
+  pages={1--16},
+  year={2016}
+}
+
+@inproceedings {osterlund2020parmesan,
+author = {Sebastian {\"O}sterlund and Kaveh Razavi and Herbert Bos and Cristiano Giuffrida},
+title = {ParmeSan: Sanitizer-guided Greybox Fuzzing},
+booktitle = {29th {USENIX} Security Symposium ({USENIX} Security 20)},
+year = {2020},
+isbn = {978-1-939133-17-5},
+pages = {2289--2306},
+url = {https://www.usenix.org/conference/usenixsecurity20/presentation/osterlund},
+publisher = {{USENIX} Association},
+month = aug,
+}
+
+@inproceedings{rawat2017vuzzer,
+  title={VUzzer: Application-aware Evolutionary Fuzzing},
+  author={Rawat, Sanjay and Jain, Vivek and Kumar, Ashish and Cojocar, Lucian and Giuffrida, Cristiano and Bos, Herbert},
+  booktitle={NDSS},
+  volume={17},
+  pages={1--14},
+  year={2017}
+}
+
+@inproceedings{godefroid2005dart,
+author = {Godefroid, Patrice and Klarlund, Nils and Sen, Koushik},
+title = {DART: Directed Automated Random Testing},
+year = {2005},
+isbn = {1595930566},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1065010.1065036},
+doi = {10.1145/1065010.1065036},
+booktitle = {Proceedings of the 2005 ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {213-223},
+numpages = {11},
+keywords = {automated test generation, interfaces, random testing, program verification, software testing},
+location = {Chicago, IL, USA},
+series = {PLDI '05}
+}
+
+
+@article{godefroid2012sage,
+  title={SAGE: whitebox fuzzing for security testing},
+  author={Godefroid, Patrice and Levin, Michael Y and Molnar, David},
+  journal={Queue},
+  year={2012},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{rizzo2011Netmap,
+author = {Rizzo, Luigi and Landi, Matteo},
+title = {Netmap: Memory Mapped Access to Network Devices},
+year = {2011},
+issue_date = {August 2011},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {41},
+number = {4},
+issn = {0146-4833},
+url = {https://doi.org/10.1145/2043164.2018500},
+doi = {10.1145/2043164.2018500},
+abstract = {Recent papers have shown that wire-speed packet processing is feasible in software even at 10~Gbit/s, but the result has been achieved taking direct control of the network controllers to cut down OS and device driver overheads.In this paper we show how to achieve similar performance in safer conditions on standard operating systems. As in some other proposals, our framework, called netmap, maps packet buffers into the process' memory space; but unlike other proposals, any operation that may affect the state of the hardware is filtered by the OS. This protects the system from crashes induced by misbehaving programs, and simplifies the use of the API.Our tests show that netmap takes as little as 90 clock cycles to move one packet between the wire and the application, almost one order of magnitude less than using the standard OS path. A single core at 1.33~GHz can send or receive packets at wire speed on 10~Gbit/s links (14.8~Mpps), with very good scalability in the number of cores and clock speed.At least three factors contribute to this performance: i) no overhead for encapsulation and metadata management; ii) no per-packet system calls and data copying (ioctl()s are still required, but involve no copying and their cost is amortized over a batch of packets); iii) much simpler device driver operation, because buffers have a plain and simple format that requires},
+journal = {SIGCOMM Comput. Commun. Rev.},
+month = aug,
+pages = {422–423},
+numpages = {2},
+keywords = {monitoring, packet forwarding, device drivers}
 }
 
 @Book{fuzzing_book,
@@ -75,6 +185,14 @@ series = {CCS '18}
  isbn = {9781491915769},
  URL = {https://www.oreilly.com/library/view/using-docker/9781491915752/},
  author = {Adrian Mouat}
+}
+
+@book{hoffman2020Was,
+author = {Hoffman, Andrew},
+title = {Web Application Security: Exploitation and Countermeasures for Modern Web Applications},
+year = {2020},
+isbn = {9781492053118},
+publisher = {O’Reilly Media}
 }
 
 @mastersthesis{seal2016Genetic,
@@ -333,4 +451,11 @@ series = {CCS '18}
  title = {aiomultiprocess documentation},
  year = {2020},
  howpublished = {\url {https://aiomultiprocess.omnilib.dev/en/stable/}}
+}
+
+@misc{zalewski2015american,
+  title={American fuzzy lop},
+  author={Zalewski, Michal},
+  howpublished = {\url {http://lcamtuf.coredump.cx/afl}},
+  year={2015}
 }

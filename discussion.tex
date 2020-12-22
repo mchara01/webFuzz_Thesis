@@ -1,0 +1,22 @@
+\chapter{Discussion}
+\label{sec:discussion}
+\minitoc
+\vspace*{1cm}
+
+\section{Limitations}
+
+\section{Future Work}
+
+Our work is not yet done. Despite our initial accomplishments there is much we need to do to take this promising fuzzing tool to another, higher, level. Undoubtedly, improvements need to be made to ensure it is an effective and trustworthy tool. Below are my ideas for future progress.
+
+There are future plans to include more functionalities in our tool kit to weed out other critical web-app vulnerabilities through our detection suite, so it can provide wider security protection that goes beyond Cross-Site Scripting. Such core vulnerabilities can be found at OWASP Top 10 ~\cite{owasp2017} the most common form of bug in wed applications is Injection and Broken Authentication. Injection flaws, for instance, such as SQL and NoSQL, occur when untrusted data is sent to an interpreter or database as part of a query. For this specific vulnerability, various known payloads have already been collected ~\cite{seclist} - the same way as the XSS payloads are - and stored in the repository waiting for the respective functionality to be added to \pname{}.
+
+There are also plans to implement a more efficient string-matching algorithm that will decrease the number of false positives we can currently record. This can be achieved by taking into consideration the location of the payload in the HTML document. These types of improvement will enable us to detect Cross-Site Scripting vulnerabilities that are triggered due to HTML attributes such as {\tt onchange } and {\tt onclick}, and not because of the HTML's <script>.
+
+One idea on improving our fuzzer is that certain core functions of the
+fuzzer might eventually be ported to faster languages; such as C and Java, that can substantially enhance speed performance and reduce memory consumption. Besides, a per link time-out will be introduced, to avoid I/O heavy web pages from stalling the fuzzing process. Initial work has also be done with netmap  ~\cite{rizzo2011Netmap}, a framework that modifies kernel modules to effectively bypass the Operating System's network stack, which often creates a bottleneck between client and server communication, and achieve a high speed packet I/O.
+
+Also to be included, are more Python modules to improve the overall performance of \pname{}. Since our fuzzer requires a lot of file I/O to do its logging work, the {\tt mmap } module can be utilised by using lower-level operating system APIs to load a file directly into the computer memory and read/write files as if they were one large string or array ~\cite{mmap}. Another module that could boost the performance of \pname{} is aiomultiprocess ~\cite{aiomultiprocess}. As we briefly mentioned in Chapter ~\ref{sec:background}, AsyncIO is limited to the speed of GIL, and multiprocessing entails spreading tasks over a computer's cores. By combining the two, we can overcome these obstacles and truly achieve 'parallelism' in Python. Achieving 'parallelism' would be a beneficial outcome as today's PCs/laptops have processing units with multiple cores.
+Having said this, ideas of optimization are one thing, putting them into practice is an entirely different matter. Every step has to be properly assessed and examined scientifically before they can be added to our tool.
+
+\textit{"Premature optimization is the root of all evil (or at least most of it) in programming," said Donald Knuth - the father of the analysis of algorithms.}

@@ -3,6 +3,10 @@
 \minitoc
 \vspace*{1cm}
 
+and the way
+we deployed our WordPress application using containers to
+evaluate our fuzzer's performance.
+
 % NEW SECTION
 \section{Methodology}
 For the evaluation of our tool, we opted for convenience to use Docker ~\cite{docker_def}, which we also discussed in Chapter ~\ref{sec:background}. Docker is a software that can package your application, its dependencies, system tools, system libraries and settings in a single comprehensive virtual container. This is because Docker is lightweight, portable and can improve application development and deployment considerably. As we already mentioned in Chapter ~\ref{sec:architecture}, \pname{} is limited to web applications written in PHP due to the instrumentation. What are the best web applications to evaluate our tool on?
@@ -22,7 +26,7 @@ The official images for the above services can be found for free at Docker Hub. 
 \begin{figure}[ht]
  \centering
  \captionsetup{justification=centering}
- \includegraphics[width=5in]{figures/multi-container.png}
+ \includegraphics[width=\linewidth]{figures/multi-container.png}
  \caption{Evaluation followed the above Multi-Container Deployment of WordPress using Docker ~\cite{multi-container}.}
  \label{fig:multi-container}
 \end{figure}
