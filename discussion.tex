@@ -4,6 +4,13 @@
 \vspace*{1cm}
 
 \section{Limitations}
+Failed to detect complex real-world XSS vulnerabilities previously reported.
+ If so, it seems very limited in the variety and needs to be improved upon to reflect the real-world scenarios which have much more variety. Even more importantly, it seems biased to test authors’ own detection tool against authors’ own “vulnerability addition tool”-generated project code. The authors should definitely augment this with more real world exploits as is the case !
+ with most recent works on XSS. For example, previous recent works such as [1] and [2] have shown that it is possible to do a large-scale analysis of web application code to find real-world XSS bugs. Quoting [2] directly,  they mention that “XSS vulnerabilities are very common and our tool generated a considerable number of reports in our large-scale evaluation for this class of attack.”. Hence, I would strongly recommend the authors to follow this approach and test their tool against real world PHP code tools to prove the practicality.  The authors current approach of testing against a single real-world XSS bug doesn’t seem sufficient enough unfortunately.
+
+In general, the evaluation is not sufficient to truly explore the potential of webFuzz to find vulnerabilities. Only two applications are in fact used in the evaluation.
+
+There is much lost by the complete exclusion of JavaScript. Previous works have used techniques such as analysis of JavaScript code or Selenium-based crawlers in order to include the JavaScript-generated request URLs in their analysis. Unfortunately, we completely avoid JavaScript without measuring how much of potential XSS vulnerabilities will be missed because of this.
 
 \section{Future Work}
 
@@ -12,6 +19,8 @@ Our work is not yet done. Despite our initial accomplishments there is much we n
 There are future plans to include more functionalities in our tool kit to weed out other critical web-app vulnerabilities through our detection suite, so it can provide wider security protection that goes beyond Cross-Site Scripting. Such core vulnerabilities can be found at OWASP Top 10 ~\cite{owasp2017} the most common form of bug in wed applications is Injection and Broken Authentication. Injection flaws, for instance, such as SQL and NoSQL, occur when untrusted data is sent to an interpreter or database as part of a query. For this specific vulnerability, various known payloads have already been collected ~\cite{seclist} - the same way as the XSS payloads are - and stored in the repository waiting for the respective functionality to be added to \pname{}.
 
 There are also plans to implement a more efficient string-matching algorithm that will decrease the number of false positives we can currently record. This can be achieved by taking into consideration the location of the payload in the HTML document. These types of improvement will enable us to detect Cross-Site Scripting vulnerabilities that are triggered due to HTML attributes such as {\tt onchange } and {\tt onclick}, and not because of the HTML's <script>.
+
+As we mentioned in the limitations, 
 
 One idea on improving our fuzzer is that certain core functions of the
 fuzzer might eventually be ported to faster languages; such as C and Java, that can substantially enhance speed performance and reduce memory consumption. Besides, a per link time-out will be introduced, to avoid I/O heavy web pages from stalling the fuzzing process. Initial work has also be done with netmap  ~\cite{rizzo2011Netmap}, a framework that modifies kernel modules to effectively bypass the Operating System's network stack, which often creates a bottleneck between client and server communication, and achieve a high speed packet I/O.

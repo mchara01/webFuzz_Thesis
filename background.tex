@@ -15,7 +15,7 @@ XSS flaws occur whenever an application includes untrusted data in its web page 
 Reflected XSS ~\cite{rxss_def} vulnerabilities arise when arbitrary data is copied from a request and echoed into the application's immediate response. This way, scripting language code included within a request can be dynamically executed.
 In the case of Stored XSS vulnerabilities, the malicious payload is first permanently stored in storage such a database residing on a server, and is only later outputted by an unsuspecting query. Examples might be Web forums or blog comments. 
 
-\pname{} focuses in detecting both bugs that can lead to both Reflected or Stored Cross-Site Scripting, which are among the most common of XSS attacks. An illustration of the latter can be seen at Figure ~\ref{lst:storedxss} and of the former see Figure ~\ref{lst:reflectedxss}. In both the illustrations, the attacker and victim is represented by \pname{}.
+\pname{} focuses in detecting both bugs that can lead to both Reflected or Stored Cross-Site Scripting, which are among the most common of XSS attacks. An illustration of the latter can be seen at Figure ~\ref{fig:storedxss} and of the former see Figure ~\ref{fig:reflectedxss}. In both the illustrations, the attacker and victim is represented by \pname{}.
 
 It is imperative that we understand what an RXSS (reflected XSS) bug typically looks like, in order to grasp the thesis' perspective on such vulnerabilities. Most of the time, RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
@@ -70,11 +70,11 @@ With this quality assurance technique, software is exercised using a vast number
 A black-box fuzzer treats the program as a black box and is unaware of
 internal program structure. It conducts its test on the target through external
 interfaces and produces random inputs using no information of the target's underlying structure. Hence,  black-box fuzzers are only able to scratch the surface usually and expose "shallow" bugs ~\cite{fuzzing_owasp}. 
+
 A white-box fuzzer infers source code knowledge, such as source code auditing, to reveal
 flaws in the software. It leverages program analysis to systematically
-increase code coverage or to reach certain critical program locations. Program analysis can be based on either static or dynamic analysis, or their combination ~\cite{program_analysis_book}. They may also leverage symbolic execution in order to derive what inputs cause each part of a program to execute ~\cite{symbolic_exe}. 
+increase code coverage or to reach certain critical program locations. Program analysis can be based on either static or dynamic analysis, or their combination ~\cite{program_analysis_book}. They may also leverage symbolic execution in order to derive what inputs cause each part of a program to execute ~\cite{symbolic_exe}. Therefore, they can be very effective at exposing bugs that hide deep in the program. By studying the application code, you may be able to detect optional or proprietary features, which should be tested as well.
 
-Therefore, they can be very effective at exposing bugs that hide deep in the program. By studying the application code, you may be able to detect optional or proprietary features, which should be tested as well.
 A fuzzer is considered gray-box when it leverages instrumentation rather than program analysis to glean information about the coverage of a generated input from the program it tries to fuzz. This thesis explores in detail gray-box fuzzing, which is a combination of both the white-box and black-box approaches since it uses the internals of the software to assist in generating better test cases.
 
 \section{Instrumentation}
