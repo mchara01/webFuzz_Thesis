@@ -3,7 +3,7 @@
 \minitoc
 \vspace*{1cm}
 
-This the first and introductory chapter of this thesis. Here we analyse what motivated me to start this project, any related work regarding fuzzing, the contribution that our fuzzing tool has and the outline of the topics of the rest of the chapters included in this thesis.
+This the first and introductory chapter of this thesis. Here we analyse what motivated us to do research in the area of grey-box fuzzing and start this project, any related work regarding this area, the contribution that this thesis makes and the outline of the topics of the chapters included in this thesis.
 
 % NEW SECTION
 \section{Motivation}
@@ -15,26 +15,22 @@ Although automated software testing has become an attractive field of research, 
  
 % NEW SECTION REPHRASE
 \section{Related Work}
- Numerous fuzzers recently developed try to optimize the fuzzing process by proposing various methodologies ~\cite{godefroid2012sage, stephens2016driller, rawat2017vuzzer, aschermann2019nautilus, aschermann2019redqueen, hoffman2020Was, osterlund2020parmesan }. For example, most of the fuzzers take advantage of instrumentation on the source or binary level. That is, inserting code to the program in order to receive feedback when a code block gets
+ Numerous fuzzers recently developed try to optimize the fuzzing process by proposing various methodologies ~\cite{godefroid2012sage, stephens2016driller, rawat2017vuzzer, aschermann2019nautilus, aschermann2019redqueen, hoffman2020Was, osterlund2020parmesan}. For example, most of the fuzzers take advantage of instrumentation on the binary or source level. That is, inserting code to the program in order to receive feedback when a code block gets
 triggered and try to adjust the generated inputs to improve code coverage. Others utilize symbolic/concolic execution for extracting useful information about the program and use that information for improving the input generation process ~\cite{stephens2016driller,godefroid2005dart,godefroid2012sage}. However, all these fuzzers are currently targeted towards finding vulnerabilities in native code, while web applications have received limited attention. More related work will be see again at Chapter ~\ref{sec:relatedwork}.
 
 \section{Contributions}
-In this paper, we propose webFuzz, which is the first grey-box fuzzers for web applications ~\ref{doupe2010johnny}. Currently available fuzzers for web applications act in a blackbox fashion ~\ref{doupe2010johnny}; they just brute force the target with URLs that embed known web-attack payloads. In contrast, \pname{} firstly instruments a web application by adding code that tracks all control flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded in the web application's HTTP response using custom headers or can be outputted to a shared file or memory region. On the other hand, the fuzzer starts sending requests to the target and analyses the responses in order to realize any interesting requests that would later help to improve the code coverage and as a result, trigger vulnerabilities nested deep in the web application's code.
+In this thesis, \pname{} is proposed. It is a prototype grey-box fuzzing tool for web applications. Today, the only fuzzers available for web applications are developed to behave in a black-box fashion ~\cite{doupe2010johnny}. This is to say they use brute force to bombard their targets with URLs that embed known web-attack payloads. Recently there where breakthroughs with white-box fuzzing also ~\cite{navex2018,Borges2018BaZINGAWF}. On the contrary, \pname{} initially instruments the targeted web application by adding code that tracks all control flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded in the web application's HTTP response using custom headers or outputted to a shared log file or memory region. Subsequently, the fuzzer begins sending requests to the target and analyses the responses to detect any interesting requests that would later help to improve the code coverage and as a result, trigger vulnerabilities embedded deep in the web application's code.
 
+The following contributions are made in this thesis:
 
+\begin{enumerate}
 
-A highly automated testing technique that covers numerous boundary cases
-using invalid data (from files, network protocols, API calls, and other targets)
-as application input to better ensure the absence of exploitable vulnerabilities.
-The name comes from modem applications’ tendency to fail due
-to random input caused by line noise on fuzzy telephone lines.A highly automated testing technique that covers numerous boundary cases
+\item We design, implement and evaluate \pname{}, the first grey-box fuzzer realized for discovering vulnerabilities in web applications. \pname{} applies instrumentation on the target web application for guiding the entire fuzzing process. Instrumentation can be applied on the AST level of PHP-based web applications for creating a feedback loop and utilizing it in order to increase code coverage.
+\item We thoroughly evaluate \pname{} in terms of coverage, throughput and efficiency in finding unknown bugs. For better understanding the measured capabilities of \pname{} we compare our results with three existing web-application fuzzers. \pname{} is the only fuzzer that
+reports coverage information; in particular, \pname{} can cover about 21.5\% of the entire WordPress code, which contains around half a million LoCs, in 50 hours of fuzzing. As expected, \pname{} is slower, in terms of throughput, due to the involved instrumentation. In fact, another popular fuzzer, Wfuzz ~\cite{wfuzz} is three times faster when fuzzing Drupal, but this is something to be expected, since the reduction of the throughput due to the instrumentation pays off in increased coverage in the long run. Finally, \pname{}, compared to the other three fuzzers, finds the most injected vulnerabilities (30 with the second one being Wfuzz with 28) for a fuzzing session that lasts 65 hours.
+\item To foster further research in the field, \pname{} is release as open source.
 
-mutation-based fuzzer, might actively see the code paths executed in the target and make adjustments accordingly, which is very smart. EFS and AFL do exactly this
+\end{enumerate}
 
-even google is very active in the industry of fuzzers https://github.com/google/oss-fuzz, atheris
-
-
-% NEW SECTION
-\section{Contributions}
-
-\section{Outline Contents}
+\section{Thesis Outline}
+The thesis consist of eight chapters. In the first chapter we present the incentive of this thesis, any related work on the topic and the contributions of this thesis. In the second chapter we state any relevant background information required to grasp the perspective of this thesis. Continuing to the third chapter, the architecture of the tool is discussed on a higher level without delving into too much implementation details. The fourth chapter is dedicated for discussing the technical aspects of the fuzzing tool developed. The fifth chapter consists of the evaluation to see how well \pname{} performs in terms of finding bugs, code coverage and throughput against other fuzzers. In the sixth chapter, a discussion is included that consist of the limitation faced during the process and any future plans we have for our tool. In the seventh chapter we elaborate on the related work made in the area of fuzzing over the years. In the eight and final chapter we give our conclusion.

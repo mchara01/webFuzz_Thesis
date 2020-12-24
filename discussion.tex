@@ -3,14 +3,20 @@
 \minitoc
 \vspace*{1cm}
 
+In the discussion chapter, any limitations faced during the development of \pname{} are stated and plans that we have for the future of our fuzzing tool.
+
 \section{Limitations}
-Failed to detect complex real-world XSS vulnerabilities previously reported.
- If so, it seems very limited in the variety and needs to be improved upon to reflect the real-world scenarios which have much more variety. Even more importantly, it seems biased to test authors’ own detection tool against authors’ own “vulnerability addition tool”-generated project code. The authors should definitely augment this with more real world exploits as is the case !
- with most recent works on XSS. For example, previous recent works such as [1] and [2] have shown that it is possible to do a large-scale analysis of web application code to find real-world XSS bugs. Quoting [2] directly,  they mention that “XSS vulnerabilities are very common and our tool generated a considerable number of reports in our large-scale evaluation for this class of attack.”. Hence, I would strongly recommend the authors to follow this approach and test their tool against real world PHP code tools to prove the practicality.  The authors current approach of testing against a single real-world XSS bug doesn’t seem sufficient enough unfortunately.
+During the development of \pname{} we faced some obstacles that we discuss below.
 
-In general, the evaluation is not sufficient to truly explore the potential of webFuzz to find vulnerabilities. Only two applications are in fact used in the evaluation.
+Concerning the choice of Wfuzz as the main fuzzer to compare \pname{} with, after extensive research, it became apparent that there are not as many black-box fuzzers around as there used to be a decade ago. Many older and renowned black-box fuzzers mentioned in various web sites and published papers ~\cite{doupe2010johnny, bau2010state, duchene2014kameleonfuzz} have either ceased to exist or are no longer developed and maintained. We have found that Wfuzz is the only fuzzer that could easily be extended to our needs without requiring extensive research and training.
 
-There is much lost by the complete exclusion of JavaScript. Previous works have used techniques such as analysis of JavaScript code or Selenium-based crawlers in order to include the JavaScript-generated request URLs in their analysis. Unfortunately, we completely avoid JavaScript without measuring how much of potential XSS vulnerabilities will be missed because of this.
+In addition, during the evaluation phase, more evidence can be submitted to explore deeper the potential of \pname{} in detecting vulnerabilities. For instance, the tool can be evaluated on more open-source projects written in PHP and on more complex real-world XSS vulnerabilities, that will reflect the real-world scenarios. Such large-scale analysis of web application code to find real-world XSS bugs where proposed by Backes et al. ~\cite{efficient2017}.
+
+At the time being webFuzz’s detection suite is limited to Reflected and Stored Cross-Site Scripting. DOMbased XSS vulnerabilities that rely on the browser's JavaScript runtime context, are so far out the fuzzer's scope. This kind of attacks require no interaction with
+the server, and succeed when the JS code does not sanitize the user input before rendering it (e.g., using the {\tt innerHTML} property). For detecting these, we would have to render the HTML and run the JavaScript code of each request. This would in turn severely degrade the fuzzer's throughput, that is why it has been avoided for the initial version of \pname{}.  Unfortunately, by the complete exclusion of JavaScript many potential XSS vulnerabilities are missed.
+ 
+Moreover, as I had no prior experience with fuzzing and the different categories that constitute it, I devoted much time at the start of thesis to educated my self at the work being done at research level in the field.
+
 
 \section{Future Work}
 
@@ -20,7 +26,7 @@ There are future plans to include more functionalities in our tool kit to weed o
 
 There are also plans to implement a more efficient string-matching algorithm that will decrease the number of false positives we can currently record. This can be achieved by taking into consideration the location of the payload in the HTML document. These types of improvement will enable us to detect Cross-Site Scripting vulnerabilities that are triggered due to HTML attributes such as {\tt onchange } and {\tt onclick}, and not because of the HTML's <script>.
 
-As we mentioned in the limitations, 
+As we mentioned in the limitations, previous works have used techniques such as analysis of JavaScript code or Selenium-based crawlers in order to include the JavaScript-generated request URLs in their analysis. We can adopt similar approaches since we are currently missing many bugs be excluding JavaScript. %Moreover, to improve our evaluation we can adopt similar approaches that Backes et al. did  ~\cite{efficient2017} where they propose a way to built code property graphs for 1,854 popular open-source PHP projects on GitHub, storing them in a graph database and detect vulnerabilities through flow-finding traversals.
 
 One idea on improving our fuzzer is that certain core functions of the
 fuzzer might eventually be ported to faster languages; such as C and Java, that can substantially enhance speed performance and reduce memory consumption. Besides, a per link time-out will be introduced, to avoid I/O heavy web pages from stalling the fuzzing process. Initial work has also be done with netmap  ~\cite{rizzo2011Netmap}, a framework that modifies kernel modules to effectively bypass the Operating System's network stack, which often creates a bottleneck between client and server communication, and achieve a high speed packet I/O.
