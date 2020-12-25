@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  mariadb:
+    image: mariadb:10.5
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_fuzz
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    restart: always
+  wordpress:
+    image: wordpress:php7.3-fpm
+    volumes:
+      - ./data/wordpress:/var/www/html
+    depends_on:
+      - mariadb
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: root
+      WORDPRESS_DB_NAME: db_fuzz
+      WORDPRESS_DB_USER: user
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_TABLE_PREFIX: wp_
+    links:
+      - mariadb
+    restart: always
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/wordpress:/var/www/html
+    ports:
+      - 8080:80 # Host machine port 8080 mapped to the container port 80.
+    links:
+      - wordpress
