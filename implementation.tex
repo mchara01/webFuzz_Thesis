@@ -96,7 +96,6 @@ As the fuzzing tool expands, more valuable information is expected to be include
  \label{fig:curses_interface}
 \end{figure}
 
-
 \section{Running webFuzz}
 Running \pname{} is fairly simple. All necessary modules accompanied with their exact version needed to be installed for \pname{} to work smoothly. These are listed in a "requirements" text file. Other executing and installing dependency instructions can be found at the README.md file in the tool's repository. A help menu that shows all available arguments in which \pname{} can run in, are shown in Figure ~\ref{fig:argparser_menu}. As you can see, arguments are separated in three categories; namely optional, required and positional. Optional arguments are extra functionalities that you do not have to include when running the tool whereas required and positional are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the argparse~\cite{argparse} Python module was used.
 Also, throughout the execution, logging is used as a means of tracking events that happen when the fuzzer runs. Logging is a module in the Python standard library that provides a richly-formatted log.

@@ -3,7 +3,15 @@
 \minitoc
 \vspace*{1cm}
 
+In this chapter any relevant work done in the past year at research level to the field of fuzzing is stated here.
+
 \section{Generic Fuzzing}
-The tool's main objective is finding trigger points on the target web application and supplying them with known XSS payloads instead of generating our own XSS payloads like others fuzzers do ~\cite{duchene2014kameleonfuzz}.
+Fuzzing has been perceived through several techniques and algorithms over the years. Firstly, we have the black-box fuzzers ~\cite{householder2012probability,sparks2007automated,woo2013scheduling} which are unaware of the fuzz target's internals and thus are trying to trigger vulnerabilities by randomly generating the inputs. While the black-box fuzzers category might not be as performant as others, they offer
+the advantage of compatibility with any program ~\cite{osterlund2020parmesan,rawat2017vuzzer}. The other two categories are white- and grey-box fuzzers. These two leverage instrumentation to obtain feedback concerning the inputs' precision in discovering unseen paths. 
+
+It is proven that the feedback is vital for a fuzzer’s performance since it can be used to steer the fuzzer towards exploring new code paths, resulting in a better code coverage also known as
+coverage-based fuzzers.
+
 
 \section{Web Applications Fuzzing}
+The tool's main objective is finding trigger points on the target web application and supplying them with known XSS payloads instead of generating our own XSS payloads like others fuzzers do ~\cite{duchene2014kameleonfuzz}.
