@@ -2,8 +2,16 @@
 \label{sec:conclusion}
 \vspace*{0.25cm}
 
-Fuzz testing is a promising technology that has been used to uncover
-many important bugs and security vulnerabilities. This promise
-has prompted a growing number of researchers to develop new
-fuzz testing algorithms. 
+Fuzzing has evolved significantly in analysing native applications, becoming a hot field for research for many. While it is used extensively to uncover many important bugs and security vulnerabilities in native apps, web applications have received limited attention, so far.
+
+In this thesis, we presented \pname{}, a prototype grey-box fuzzer for discovering Cross-Site Scripting vulnerabilities in web applications. \pname{} utilizes instrumentation on the target web application for producing a \emph{feedback loop} and employing it to boost code coverage score. Consequently, it increases the total of potential vulnerabilities found.
+
+Furthermore, for the evaluation of \pname{} we used two web applications; namely WordPress and Drupal, for the the following metrics: competence in detecting Reflected Cross-Site Scripting bugs, Throughput and Global Code Coverage.
+
+Regarding the first metric, \pname{} was able to detect the most artificially injected vulnerabilities compared to the other three black-box fuzzers in test. More specifically it was able to weed out \emph{30} bugs with the second on being Wfuzz with \emph{28}.
+
+Also, in terms of throughput, unfortunately currently \pname{} does not match the throughput of native applications fuzzers such as AFL nor black-box web-app fuzzers such as Wfuzz as the overhead from the instrumentation seems to be hefty.
+
+Other findings suggest that our fuzzing tool can achieve coverage of the entire WordPress and Drupal code as high as \emph{21.5\%} and \emph{30\%} respectively, in a roughly 50 hours fuzzing session.
+
 

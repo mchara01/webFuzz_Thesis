@@ -80,7 +80,7 @@ At this point, it is important to note that vulnerability scanners such as Burp 
 
 As we can clearly observe from Table ~\ref{tools_table}, results of all fuzzers for real-life bugs are disappointing. For this reason, we further evaluated the fuzzing tools on how well they perform with artificially injected bugs (Section ~\ref{sec:automated}). Because OWASP ZAP and Burp Suite Professional do not generate the required format of injection payloads unless advanced features and modifications are in place, they were unable to detect any of the artificially injected bugs. Using their advanced features requires extensive research and training as the learning curve is steep, hence we opted to customise Wfuzz only since it is more straight forward.
 
-To make fair comparison of the vulnerability detecting capabilities of \pname{} and Wfuzz, some modification have to be made to the latter since originally the tool was meant to be a brute forcer and not a black-box fuzzer. Firstly, an independent crawling process was added at the start to dynamically built the web application's site map. The findings are stored and fed to Wfuzz as a list of fuzz targets. Utilising the Python module version of Wfuzz, a Python script was created that fuzzes the list of links found by the crawler indefinitely. Payloads used during the fuzzing process are customised to resemble the mutated payloads that \pname{} uses. They consist of random strings, HTML syntax tokens, and random numbers all concatenated with the same XSS payloads that webFuzz uses from its corpus described in Chapter ~\ref{sec:architecture}.
+To make fair comparison of the vulnerability detecting capabilities of \pname{} and Wfuzz, some modification have been made to the latter since originally the tool was meant to be a brute forcer and not a black-box fuzzer. Firstly, an independent crawling process was added at the start to dynamically infer the control flow of the web application. The findings are stored and fed to Wfuzz as a list of fuzz targets. Utilising the Python module version of Wfuzz, a Python script was created that fuzzes the list of links found by the crawler indefinitely. Payloads used during the fuzzing process are customised to resemble the mutated payloads that \pname{} uses. They consist of random strings, HTML syntax tokens, and random numbers all concatenated with the same XSS payloads that webFuzz uses from its corpus described in Chapter ~\ref{sec:architecture}.
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_bugs.pdf}
@@ -92,5 +92,37 @@ The results of our 65-hour long experiment, comparing Wfuzz and \pname{} in term
 number, situated in a vulnerable payload, is guessed correctly our fuzzing tool will detect this change and will thus prioritize the request that causes it. Using this method, the finding of a magic number is done in an incremental fashion - one correct digit at a time - which is much faster than guessing the whole number at once like Wfuzz does. As a real world analogy, each digit of the magic number can represent one correct mutation that gets us closer to the vulnerable basic block. A reason for the gradual decrease of webFuzz's detection performance lies in its growing request queue size. WordPress is composed out of approximately half a million Lines of Code(LoC), with 48,040 basic blocks instrumented in total.
 
 \section{Throughput}
+One reason for the effectiveness of fuzzers in uncovering vulnerabilities is their capability to test vast amounts of inputs per second. Thus, it is essential that the overhead caused by instrumentation does not degrade severely the web application's response time and that the fuzzer's processing time for each request is kept as brief as possible.
+
+\begin{figure}[!htb]
+  \centering \includegraphics[width=\linewidth]{figures/plot_throughput.pdf}
+  \caption{Requests made per second over time for three different scenarios. Both \pname{} and Wfuzz are evaluated on Drupal and WordPress. Wfuzz takes the lead with a difference.} 
+  \label{fig:plot_throughput}
+\end{figure}
+
+As observed in Figure ~\ref{fig:plot_throughput}, the black-box version of Wfuzz has about \emph{3} times higher throughput than \pname{} in the case of Drupal and \emph{4.5} times in WordPress. This is plausible as the overhead added from instrumentation roughly doubles the page response time in the case of WordPress, and due to webFuzz's increased statefulness in tracking, analysing and ranking all the requests, increases the per request processing time.
+
+After 2,048 minutes in WordPress using \pname{}, with an authenticated session established, the throughput is seen to plummet for a lengthy period of time. This implies that the fuzzer got stuck on fuzzing particular links that have lofty response times. The fact that the fuzzer keeps on fuzing these links means that they have have a high coverage score and mutating them is effective enough to trigger new code paths in them.
+
+Looking at Figure ~\ref{fig:plot_throughput}, we can state with confidence that much has to be done to improve the throughput of \pname{}, since currently it is nowhere near that of native applications fuzzers such as AFL and EFS nor is it very comparable to black-box web fuzzers such as Wfuzz. Improvements are discussed in Chapter ~\ref{sec:discussion}.
 
 \section{Global Code Coverage}
+Utilizing the instrumentation feedback, \pname{} has calculated the Global Code Coverage for both authenticated and guest sessions of WordPress and for an authenticated session run of Drupal. Observing Figure ~\ref{fig:plot_coverage}, we can view how the aforementioned metric rises over time for the two authenticated session scenarios.
+
+\begin{figure}[!htb]
+  \centering \includegraphics[width=\linewidth]{figures/plot_coverage.pdf}
+  \caption{Three different execution scenarios and the accumulated code coverage gained over time in each one. Exponential increases witnessed at the start of the experiments are due to the initial exploration of the target web application's site map by the crawler.} 
+  \label{fig:plot_coverage}
+\end{figure}
+
+During the not authenticated session scenario of WordPress, access is forbidden to various links such as Administrative Dashboard related links. For this reason, the code coverage calculated is the smallest and remains stagnant at about \emph{7\%} for the best part of the experiment. However, the authenticated sessions have access to the Administrative Dashboard provided by Drupal and WordPress, and have thus managed to achieve global code coverages as high as \emph{30\%} and \emph{21.5\%} respectively. 
+
+An important thing to note here is that the code coverage achieved by \pname{} in the authenticated session run of WordPress indicates rises in the global code coverage even after 50 hours of execution time. A good signal that the mutation functions used are effective enough to trigger new code paths, even after the crawling process has finished.
+ 
+\begin{figure}[!htb]
+  \centering \includegraphics[width=\linewidth]{figures/plot_coverage2.pdf}
+  \caption{Code coverage achieved by Wfuzz over time when fuzzing WordPress using an authenticated session. After running for approximately \emph{5000} minutes (3.5 days) the code coverage remained stagnant at \emph{14.6\%} for the rest of the experiment.}
+  \label{fig:plot_coverage2}
+\end{figure}
+
+In Figure ~\ref{fig:plot_coverage2} we can see the Global Code Coverage achieved by a black-box fuzzer, Wfuzz, when fuzzing WordPress using an authenticated session. The peak of this experiment was reached in roughly \emph{3.5} days (5000 minutes) when code coverage of \emph{14.613\%} was reached. This experiment was done solely to check how well a black-box fuzzer performs in terms of code coverage against a gray-box fuzzer, like \pname{}, that leverages instrumentation feedback. When looking at both Figures ~\ref{fig:plot_coverage} and ~\ref{fig:plot_coverage2} we can state with confidence that the instrumentation feedback provides \pname{} the edge needed to surpass the performance of Wfuzz. More precisely, when both where fuzzing WordPress with an authenticated session, \pname{} managed to get almost \emph{1.5} times higher code coverage than Wfuzz. Wfuzz was left running for much longer time than \pname{} but with no luck since it stayed stagnant on the score it achieved in 3.5 days at \emph{14.613\%}.
