@@ -3,7 +3,7 @@
 \minitoc
 \vspace*{1cm}
 
-
+WRITE INTRO
 
 % NEW SECTION
 \section{Methodology}
@@ -47,7 +47,7 @@ For evaluating the performance of \pname{}, the following metrics are used:
 	\item {\tt Global Code Coverage}: Accumulated coverage score of the web application's code.
 \end{itemize}
 
-To compare the Vulnerabilities Detected and the Throughput of \pname{} against other black-box fuzzers we use Wfuzz ~\cite{wfuzz}, Burp Suite Professional ~\cite{burp} and OWASP ZAP ~\cite{ owaspzap}. The main comparison was made against Wfuzz due to its ease of operation and ease to extend. The choice of Wfuzz as the main comparison of our tool is further elaborated in Chapter ~\ref{sec:discussion}.
+To compare the Vulnerabilities Detected and the Throughput of \pname{} against other black-box fuzzers we use Wfuzz ~\cite{wfuzz}, Burp Suite Professional ~\cite{burp} and OWASP ZAP ~\cite{ owaspzap}. All three of this tools are consider essential in any penetration tester's arsenal as their included by default in Kali Linux and are widely used in Capture The Flag competitions such as DEF CON. Other tools; including \emph{nikto, skipfish and wapiti} where also used during the evaluation phase but as the were not able to uncover any real or artificially injected bugs we opted not to include them any further in our evaluation. The main comparison was made against Wfuzz due to its ease of operation and ease to extend. The choice of Wfuzz as the main comparison of our tool is further elaborated in Chapter ~\ref{sec:discussion}.
 
 \section{Vulnerabilities Detected}
 To evaluate how well \pname{} performs in terms of bug detection, we injected 150 artificial  Reflected Cross-site bugs, with the methodology we discussed in Section ~\ref{sec:automated} and 4 real Reflected Cross-site Scripting bugs to the instrumented version of WordPress, and tested how 3 well-known black-box fuzzers perform in comparison to \pname{}. The real-life RXSS bugs were found from CVE ~\cite{cve} and have the following ids: CVE-2018-7280, CVE-2019-11843, CVE-2020-7104, CVE-2020-7107.

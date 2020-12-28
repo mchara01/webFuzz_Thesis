@@ -59,13 +59,11 @@ This malicious form is designed to trigger the vulnerability found in the above 
 credentials to the attacker as well. 
 
 Defeating XSS attacks is not dissimilar to defending against other types of code injection.
-The input must be sanitized. User input containing HTTP code needs to be escaped or encoded to avoid its execution. Also, systemwide measures
-such as Content Security Policy(CSP) ~\cite{csp_def} may be enabled to eliminate or mitigate XSS attacks. Nevertheless, flaws such as Buffer Overflows or Cross-Site Scripting issues comprise a majority of security incidents, and malicious hackers abuse them on a daily basis. 
+The input must be sanitized. User input containing HTTP code needs to be escaped or encoded to avoid its execution. Also, systemwide measures such as Content Security Policy(CSP) ~\cite{csp_def} may be enabled to eliminate or mitigate XSS attacks. Nevertheless, flaws such as Buffer Overflows or Cross-Site Scripting issues comprise a majority of security incidents, and malicious hackers abuse them on a daily basis. 
 
 \section{Fuzzing}
 A promising method for discovering unknown vulnerabilities in
-programs and web applications proven to be very effective, is a technique called fuzzing (or fuzz testing) ~\cite{fuzzing_def}. The technique was developed by Barton Miller et al. at the University of Wisconsin.
-With this quality assurance technique, software is exercised using a vast number of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned stress-testing process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
+programs and web applications proven to be very effective, is a technique called fuzzing (or fuzz testing) ~\cite{fuzzing_def}. Fuzzing was originally introduced by Barton Miller et al. at the University of Wisconsin, as one of several tools to test UNIX utilities  ~\cite{mller1990fuzz}. The technique was developed. With this quality assurance technique, software is exercised using a vast number of anomalous inputs for inferring if any of them introduces security-related side effects. A fuzzer, which is the tool that can automate the aforementioned stress-testing process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
 
 A black-box fuzzer treats the program as a black box and is unaware of
 internal program structure. It conducts its test on the target through external

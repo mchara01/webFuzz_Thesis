@@ -9,9 +9,36 @@ In this chapter any relevant work done in the past year at research level to the
 Fuzzing has been perceived through several techniques and algorithms over the years. Firstly, we have the black-box fuzzers ~\cite{householder2012probability,sparks2007automated,woo2013scheduling} which are unaware of the fuzz target's internals and thus are trying to trigger vulnerabilities by randomly generating the inputs. While the black-box fuzzers category might not be as performant as others, they offer
 the advantage of compatibility with any program ~\cite{osterlund2020parmesan,rawat2017vuzzer}. The other two categories are white- and grey-box fuzzers. These two leverage instrumentation to obtain feedback concerning the inputs' precision in discovering unseen paths. 
 
-It is proven that the feedback is vital for a fuzzer’s performance since it can be used to steer the fuzzer towards exploring new code paths, resulting in a better code coverage also known as
-coverage-based fuzzers.
+It is proven that the feedback is vital for a fuzzer's performance since it can be used to steer the fuzzer towards exploring new code paths, resulting in a better code coverage also known as
+coverage-based fuzzers. Otherwise, we have the directed based fuzzers that use feedback to direct the fuzzer towards particular execution paths ~\cite{godefroid2005dart}.
 
+A renowned fuzzer that is classified as coverage-based is AFL ~\cite{zalewski2015american}. AFL is a state-of-the-art grey-box fuzzer which is deemed the foundation for the majority of the recent proposed works. However, AFL fails to intelligently generate inputs to explore deep paths in programs that are hidden behind checksums or magic number \emph{if} statements.
+
+Having this in mind, recent research work makes use of symbolic and concolic execution to enhance the input generation procedure by extracting valuable information about the program. Some examples consist of DRILLER ~\cite{stephens2016driller}, DART ~\cite{godefroid2005dart} and SAGE ~\cite{godefroid2012sage}. 
+
+In spite of all these efforts to improve the fuzzing process with the use of symbolic/concolic execution based fuzzers, it has been noticed that this type of fuzzers suffer from scalability problems because when fuzzing sizeable targets, we notice the problem of state explosion ~\cite{Clarke2012}. This problem is observed when the number of state variables in the system increases, the size of the system state space grows exponentially making it impossible to explore the entire state space with limited resources of time and memory.
+
+Consequently, some other research proposals try to accomplish what symbolic/concolic execution based fuzzers offer with a less expensive approach. One example is REDQUEEN ~\cite{aschermann2019redqueen} that utilizes the input-to-state correspondence in order to infer the values that would be later used and try control them. Another such example is VUzzer ~\cite{rawat2017vuzzer}, an application-aware evolutionary fuzzer that leverages control and data-flow features using static and dynamics analysis to infer fundamental properties of the fuzz target.
 
 \section{Web Applications Fuzzing}
-The tool's main objective is finding trigger points on the target web application and supplying them with known XSS payloads instead of generating our own XSS payloads like others fuzzers do ~\cite{duchene2014kameleonfuzz}.
+Even Though a huge effort have been given to build fuzzers with the aim to weed out vulnerabilities in native code, little attention has been given to web applications bugs. Tools currently available that target web application vulnerabilities behave predominantly in a black-box fashion, therefore, they are unable to uncover vulnerabilities that are embedded deep into the web application ~\cite{bau2010state, doupe2010johnny}.
+ 
+Such as SecuBat ~\cite{kals2006secubat}, a web vulnerability scanner that uses a black-box approach to detect SQL injection(SQLi) and Cross-Site Scripting(XSS) vulnerabilities. Another example is KameleonFuzz ~\cite{duchene2014kameleonfuzz}, a black-box fuzzer for web vulnerabilities targeting XSS susceptibilities.
+
+There have been attempts to overcome the shortcomings of black-box techniques. Doupé et al. ~\cite{doupe2012enemy} proposed a way to navigate through a web application's states to discover whether an input is interesting by noticing the changes of the output. 
+
+As an alternative, there is the white-box approach to consider with access to the web application's source code. Kieyzun et al. ~\cite{kieyzun2009automatic} used a technique exploiting information about the code to automatically generate inputs that target SQLi and XSS vulnerabilities. 
+
+Moreover, Artzi et al. ~\cite{artzi2010finding} developed another tool for discovering web
+application vulnerabilities by collecting information about the target extracted through concrete and symbolic execution.
+
+White-box methods outperform black-box approaches by having access to the source code of the target being fuzzed. However, black-box processes are more scalable when the source code is not 
+available. 
+
+To conclude, web vulnerability scanners are also realized through static analysis tools. Prime examples are Pixy ~\cite{jovanovic2006pixy} which uses static analysis at the source code
+level to detect vulnerable code. 
+
+Another tool combining static and dynamic analysis is Saner ~\cite{balzarotti2008saner} which tries to identify any sanitization processes that do not work as expected to, resulting in allowing attackers to introduce exploits.
+
+Contrary to the above research work for identifying web vulnerabilities, our technique adopts the
+grey-box approach. \pname{} instruments the fuzz target to receive feedback on whether a generated input is interesting. These inputs are used to generate other test cases that will hopefully result in wider code coverage that could possibly trigger more vulnerabilities. Unlike other fuzzers mentioned who generate their own XSS payloads ~\cite{duchene2014kameleonfuzz}, our tool's  main objective is finding trigger points on the target web application and supplying them with known XSS payloads.
