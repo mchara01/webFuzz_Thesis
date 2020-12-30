@@ -5,7 +5,6 @@
 
 This chapter is dedicated to the technical aspects involved while exploring some of the key characteristics that constitute \pname{}. In depth, we look at the coding standards used when developing this fuzzing tool, exploiting Asynchronous I/O to achieve concurrency in Python, the parsing procedure of a response and a user-friendly interface displaying statistics. Additionally, useful information is given about operating \pname{}.
 
-
 % NEW SECTION
 \section{Coding Standards}
 Guido van Rossum(creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, our main aim was to write clean, readable and eye-pleasing code by following best practice that the best professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for good programming habits and practices. 
@@ -101,7 +100,7 @@ Running \pname{} is straightforward. All necessary modules accompanied with thei
 
 A help menu that shows all available arguments in which \pname{} can run in, are shown in Figure ~\ref{fig:argparser_menu}. As you can see, arguments are separated in three categories; namely \emph{Optional}, \emph{Required} and \emph{Positional}. Optional arguments are extra functionalities that you do not have to include when running the tool, whereas Required and Positiona are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the argparse~\cite{argparse} Python module was used.
 
-Also, throughout the execution, \emph{logging} is used as a means of tracking events that happen when the fuzzer runs. Logging is a module in the Python standard library that provides a richly-formatted log.
+Also, throughout the execution, logging is used as a means of tracking events that happen when the fuzzer runs. Logging is a module in the Python standard library that provides a richly-formatted log.
 
 \begin{figure}[ht]
  \centering
@@ -111,6 +110,35 @@ Also, throughout the execution, \emph{logging} is used as a means of tracking ev
  \label{fig:argparser_menu}
 \end{figure}
 
-\section{Other functionalities}
-As you may notice, our fuzzing tool provides manual functionality also. Basically, 
-There is also a black-box version and a manual version of our tool.
+\section{Interactive and Black-Box Functionalities}
+Our fuzzing tool provides manual functionality also. This functionality allows the user to engage through an interactive session with our fuzzer. After the user provides the target to be fuzzed, a connection its establish and the session begins. Before a request is made, forms are extracted from the target and all input fields are presented to the user. Then, the user chooses from a menu of option which fields to fuzz and how. More specifically, options consist of filling the fields with manually inserted data, with XSS payloads from the corpus previously seen at Table \ref{xss_payload_tables} or choosing to mutate data using a basic mutating function. Mutating functions for a given input provided include deleting random characters, inserting characters ate random places and flipping random characters. The user must insert manually any different link desired to be fuzzed, as no crawling process is provided. At Listing ~\ref{lst:interactive_mode}, we can see a code snippet of the interactive mode. 
+
+\begin{lstlisting}[showstringspaces=false, frame=single, language=Python, caption={Options menu and their processing during interactive mode fuzzing}, numberstyle=\color{gray}, numbersep=5pt, label={lst:interactive_mode}]
+def fuzz():
+	....
+	print("Please choose one of the following fuzzing methods:")
+	print("(1) Select a random XSS payload from corpus")
+	print("(2) Mutate previous inputs")
+	print("(3) Manually insert data")
+	print("(4) Switch to Black-box fuzzing")
+	print("(5) Enter new link to fuzz")
+	ans = input()
+     	    					
+    if ans == "1":
+		data[str(i)] = str(xss_fuzzing_payload())
+	elif ans == "2":
+		choose_mutating_function(data[str(i)])
+	elif ans == "3":
+		value = input("Insert data for {}: ".format(i))
+		data[str(i)] = value
+	elif ans == "4":
+		black_box_fuzzing()
+	elif ans == "5":
+		link = input("Insert new link")
+     ...
+     
+\end{lstlisting}
+
+The user can opt to switch at any time to a more automated, brute-forcing like session where input fields of the forms at the given fuzz target are filled with XSS payloads, needless of interruption from the user. This brings us to the black-box fuzzing capabilities also provided by our fuzzing tool. When choosing to fuzz in a black-box fashion, everything that we mention this far still applies, as the core functionalities are shared between the two. The only thing that it not taken into consideration with this approach, is of course, the instrumentation.
+
+As this thesis aims to demonstrate the capabilities of \pname{} as a grey-box fuzzer and because no rigorous tests have been conducted to show the efficacy, no further discussion is made in regards to its interactive and black-box functionalities.

@@ -18,7 +18,7 @@ Reflected XSS ~\cite{rxss_def} vulnerabilities arise when arbitrary data is copi
 
 It is imperative that we understand what an RXSS (Reflected XSS) bug typically looks like, in order to grasp the thesis' perspective on such vulnerabilities. Usually, RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
-\begin{lstlisting}[frame=single, language=PHP, caption={Vulnerable login form.}, numberstyle=\color{gray}, numbersep=5pt, label={lst:vuln_login_sub}]
+\begin{lstlisting}[showstringspaces=false, frame=single, language=PHP, caption={Vulnerable login form}, numberstyle=\color{gray}, numbersep=5pt, label={lst:vuln_login_sub}]
 <?php
 $username=$_POST['username'];
 $pwd=$_POST['password'];

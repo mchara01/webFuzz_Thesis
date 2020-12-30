@@ -46,9 +46,9 @@ All artificial bugs were created with the automated vulnerability injection tool
 
 For evaluating the performance of \pname{}, the following metrics were used:
 \begin{itemize}
-	\item \emph{Vulnerabilities Detected}: Number of Reflected Cross-Site Scripting bugs reported by \pname{}.
-	\item \emph{Throughput}: Requests made per second.
-	\item \emph{Global Code Coverage}: Accumulated coverage score of the web application's code.
+	\item \emph{Vulnerabilities Detected}: Number of Reflected Cross-Site Scripting bugs reported
+	\item \emph{Throughput}: Requests made per second
+	\item \emph{Global Code Coverage}: Accumulated coverage score of the web application's code
 \end{itemize}
 
 To compare the Vulnerabilities Detected and the Throughput of \pname{} against other black-box fuzzers we used Wfuzz ~\cite{wfuzz}, Burp Suite Professional ~\cite{burp} and OWASP ZAP ~\cite{ owaspzap}. All three of these tools are considered essential in any penetration tester's arsenal as they are included by default in Kali Linux and widely used in Capture The Flag competitions such as DEF CON. Other tools; such as nikto, w3af, skipfish and wapiti were also used during the evaluation phase but as they were not able to uncover any real or artificially injected bugs we opted not to include them in our final evaluation. The main comparison was made against Wfuzz due to the ease of operation and ease to extend. The choice of Wfuzz as the main comparison of our tool is further elaborated on in Chapter ~\ref{sec:discussion}.
@@ -73,7 +73,8 @@ To evaluate how well \pname{} performs in terms of bug detection, we injected 15
  OWASP ZAP  & 2.9.0 & 1 & 0 & 1h  \\
  \hline
  \end{tabular}
- \caption{Summary of the vulnerability detection evaluation with the findings of \emph{4} fuzzers including \pname{}. The WordPress web-app included \emph{4} RXSS bugs found from CVE {~\cite{cve}} and \emph{150} artificial RXSS bugs injected manually.}
+ \captionsetup{justification=centering}
+ \caption[Vulnerability detection summary]{Summary of the vulnerability detection evaluation with the findings of \emph{4} fuzzers including \pname{}. The WordPress web-app included \emph{4} RXSS bugs found from CVE and \emph{150} artificial RXSS bugs injected manually.}
 
  \label{tools_table}
 \end{table}
@@ -88,7 +89,8 @@ To make a fair comparison of the vulnerability detecting capabilities of \pname{
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_bugs.pdf}
-  \caption{ Artificial Reflected Cross-Site Scripting bugs detected over time by \pname{} and Wfuzz. \pname{} manages to uncover more bugs quicker during the fuzzing process.} 
+  \captionsetup{justification=centering}
+  \caption[Number of artificial XSS bugs uncovered by \pname{} and Wfuzz]{Artificial Reflected Cross-Site Scripting bugs detected over time by \pname{} and Wfuzz. \pname{} manages to uncover more bugs quicker during the fuzzing process.} 
   \label{fig:plot_rxss}
 \end{figure}
 
@@ -104,7 +106,8 @@ One reason for the effectiveness of fuzzers in uncovering vulnerabilities is the
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_throughput.pdf}
-  \caption{Requests made per second over time for three different scenarios. Both \pname{} and Wfuzz are evaluated on Drupal and WordPress. Wfuzz takes the lead with a difference.} 
+  \captionsetup{justification=centering}  
+  \caption[Throughput of \pname{} and Wfuzz when fuzzing Drupal and WordPress]{Requests made per second over time for three different scenarios. Both \pname{} and Wfuzz are evaluated on Drupal and WordPress. Wfuzz takes the lead with a difference.} 
   \label{fig:plot_throughput}
 \end{figure}
 
@@ -119,7 +122,8 @@ Utilizing the instrumentation feedback, \pname{} has calculated the Global Code 
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage.pdf}
-  \caption{Three different execution scenarios and the accumulated code coverage gained over time in each one. Exponential increases witnessed at the start of the experiments are due to the initial exploration of the target web application's site map by the crawler.} 
+  \captionsetup{justification=centering}
+  \caption[Accumulated Global Code Coverage using \pname{}]{Three different execution scenarios and the accumulated code coverage gained over time in each one. Exponential increases witnessed at the start of the experiments are due to the initial exploration of the target web application's site map by the crawler.} 
   \label{fig:plot_coverage}
 \end{figure}
 
@@ -129,7 +133,8 @@ An important thing to note here is that the code coverage achieved by \pname{} i
  
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage2.pdf}
-  \caption{Code coverage achieved by Wfuzz over time when fuzzing WordPress using an authenticated session. After running for approximately \emph{5000} minutes (3.5 days) the code coverage remained stagnant at \emph{14.6\%} for the rest of the experiment.}
+  \captionsetup{justification=centering} 
+  \caption[Accumulated Global Code Coverage using Wfuzz]{Code coverage achieved by Wfuzz over time when fuzzing WordPress using an authenticated session. After running for approximately \emph{5000} minutes (3.5 days) the code coverage remained stagnant at \emph{14.6\%} for the rest of the experiment.}
   \label{fig:plot_coverage2}
 \end{figure}
 

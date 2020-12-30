@@ -11,7 +11,7 @@ component is the instrumentation of the target web application, that provides fe
 
 The second component is the fuzzing application with all its core functionalities responsible for sending requests from a dynamic request queue, reading their respective responses, parsing them to provide an informed decision on what the next request should be and displaying various statistics about the fuzzing session to the user. The fuzzer also features an inbuilt crawler that scans the HTML responses to detect anchor and form elements that can provide new, unseen paths of the web application to further explore.
 
-A regular fuzzing session using \pname{} can be seen in Figure ~\ref{sec:architecture}. It displays the process from the point the request is sent up to the stage where a response is received. A request can be produced in one of two ways; it can be in a mutated form of a previously made request which turned out to be interesting or as a new link that has been discovered by the inbuilt crawler but has not been visited yet. When the response is received, it is parsed in order to extract the execution time, vulnerabilities it may have triggered, coverage score, and to record newly discovered links.
+A regular fuzzing session using \pname{} can be seen in Figure ~\ref{fig:architecture}. It displays the process from the point the request is sent up to the stage where a response is received. A request can be produced in one of two ways; it can be in a mutated form of a previously made request which turned out to be interesting or as a new link that has been discovered by the inbuilt crawler but has not been visited yet. When the response is received, it is parsed in order to extract the execution time, vulnerabilities it may have triggered, coverage score, and to record newly discovered links.
 
 \begin{figure}[ht]
  \centering
@@ -32,7 +32,9 @@ If changes made to the input are too conservative, only limited code coverage wi
 extended to support custom GET or POST parameter mutations. The mutation functions employed are; injection of known XSS payloads, mixing the parameters from other requests (cross-over), insertion of a randomly generated payload, insertion of syntax aware payloads and altering the
 parameter types. Some parameters may get randomly opted out from the mutation process. 
 
-This can be useful in cases where certain parameters need to remain unchanged for designated areas of the program to execute. Unlike many fuzzers that employ malicious payload generation via the use of genetic algorithms, guided by an attack grammar ~\cite{duchene2014kameleonfuzz}, \pname{} chooses randomly from a corpus that consists of real-life known XSS payloads. The corpus was created with payloads that where found scattered across the internet, mainly in open-source repositories ~\cite{seclist,xsspayloadfirst,xsspayloadsecond}. Such payloads can further mutate by prepending or appending to them random strings or specific HTML, JavaScript and PHP syntax tokens. Generating payloads from scratch using complex algorithms may have zero false positives but it is, nevertheless, time consuming.
+This can be useful in cases where certain parameters need to remain unchanged for designated areas of the program to execute. Unlike many fuzzers that employ malicious payload generation via the use of genetic algorithms, guided by an attack grammar ~\cite{duchene2014kameleonfuzz}, \pname{} chooses randomly from a corpus that consists of real-life known XSS payloads. The corpus was created with payloads that where found scattered across the internet, mainly in open-source repositories ~\cite{seclist,xsspayloadfirst,xsspayloadsecond}.
+
+A small sample of XSS payloads contained in the corpus can be viewed at Table ~\ref{xss_payload_tables}. Such payloads can further mutate by prepending or appending to them random strings or specific HTML, JavaScript and PHP syntax tokens. Generating payloads from scratch using complex algorithms may have zero false positives but it is, nevertheless, time consuming.
 
 \begin{table}[ht]
 \centering
@@ -58,7 +60,7 @@ This can be useful in cases where certain parameters need to remain unchanged fo
  \hline
  \end{tabular}
  \captionsetup{justification=centering}
- \caption{Randomly selected Cross-Site Scripting payloads from the corpus \pname{} uses during its fuzzing session. The corpus consists of thousands of payloads}
+ \caption[Cross-Site Scripting payloads corpus]{Randomly selected Cross-Site Scripting payloads from the corpus \pname{} uses during its fuzzing session. The corpus consists of thousands of payloads}
  \label{xss_payload_tables}
 \end{table}
 
