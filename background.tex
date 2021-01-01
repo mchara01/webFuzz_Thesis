@@ -3,10 +3,12 @@
 \minitoc
 \vspace*{1cm}
 
-In this chapter we provide background information giving a detailed understanding on several key points concerning this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate by giving a specific example on how this vulnerability may occur. Then, we briefly discuss what fuzzing is and the various categories that constitute it and show how instrumentation helps when used during gray-box fuzzing. Towards the end, this chapter discusses the concept of concurrency in Python and concludes with the containerization of services using Docker.
+In this chapter we provide background information giving a detailed understanding on several key points about this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate by giving a specific example on how this vulnerability may occur. Then, we briefly discuss what fuzzing is and the various categories that constitute it and show how instrumentation helps when used during gray-box fuzzing. Towards the end, this chapter discusses the concept of concurrency in Python and concludes with the containerization of services using Docker.
 
 \section{Web Application Bugs}
-The internet has been growing exponentially since its commercial inception in 1969 with the creation of ARPANET. Although there are over 1 billion pages currently on-line, writing a web application so that it is secure from any vulnerability, can be extremely difficult. Every significant web application, especially large-scale ones that are composed with thousands of lines of code, have bugs in them. Even the simplest web-apps can be the root of irreparable damage when they are exploited by attackers with ulterior motives. In fact, web application vulnerabilities are among the most frequent vulnerabilities reported in the Common Vulnerabilities and Exposures database (CVE). According to CVE 2019 data, Denial of Service (19.2\%) (DoS) is ranked second and Cross-Site Scripting (XSS) (12.5\%) is fourth among the top Cybersecurity vulnerabilities ~\cite{cve}.
+The internet has been growing exponentially since its commercial inception in 1969 with the creation of ARPANET. Although there are over 1 billion pages currently on-line, writing a web application so that it is secure from any vulnerability, can be extremely difficult. Every significant web application, especially large-scale ones that are composed with thousands of lines of code, have bugs in them. EG TWITTER Even the simplest web-apps can be thIe root of irreparable damage when they are exploited by attackers with ulterior motives. 
+
+In fact, web application vulnerabilities are among the most frequent vulnerabilities reported in the Common Vulnerabilities and Exposures database (CVE). According to CVE 2019 data, Denial of Service (19.2\%) (DoS) is ranked second and Cross-Site Scripting (XSS) (12.5\%) is fourth among the top Cybersecurity vulnerabilities ~\cite{cve}.
 
 The Open Web Application Security Project (OWASP) Top 10 represents a broad consensus on the most critical security risks to web applications ~\cite{owasp2017}. One of the most pressing security problems on the Internet, according to the OWASP list, is Cross-Site Scripting (ranked 7).
 
@@ -18,7 +20,7 @@ Reflected XSS ~\cite{rxss_def} vulnerabilities arise when arbitrary data is copi
 
 It is imperative that we understand what an RXSS (Reflected XSS) bug typically looks like, in order to grasp the thesis' perspective on such vulnerabilities. Usually, RXSS is caused due to a failure to sanitise the user input. For instance, let us assume that we have a simple login page with two input fields: the username and password. The login page also displays appropriate error messages back to the user if the login fails. An implementation of this in PHP could look something like Listing ~\ref{lst:vuln_login_sub}.
 
-\begin{lstlisting}[showstringspaces=false, frame=single, language=PHP, caption={Vulnerable login form}, numberstyle=\color{gray}, numbersep=5pt, label={lst:vuln_login_sub}]
+\begin{lstlisting}[aboveskip=\baselineskip, showstringspaces=false, frame=single, language=PHP, caption={\textit{Vulnerable login form}}, numberstyle=\color{gray}, numbersep=5pt, label={lst:vuln_login_sub}]
 <?php
 $username=$_POST['username'];
 $pwd=$_POST['password'];
@@ -38,7 +40,7 @@ if (search_username($username)) {
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/storedxss.pdf}
- \caption{How Stored Cross-Site Scripting can be exploited by an attacker}
+ \caption{\textit{How Stored Cross-Site Scripting can be exploited by an attacker}}
  \label{fig:storedxss}
 \end{figure}
 
@@ -46,10 +48,9 @@ if (search_username($username)) {
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/reflectedxss.pdf}
- \caption{How Reflected Cross-Site Scripting can be exploited by an attacker}
+ \caption{\textit{How Reflected Cross-Site Scripting can be exploited by an attacker}}
  \label{fig:reflectedxss}
 \end{figure}
-
 
 The code above is faulty for two reasons. First, knowing a username exists offers clues for an attacker to guess a set of correct credentials much faster, since only the password is left to find. But this design choice is not linked with Cross-Site Scripting. The source of the bug is on line 11 where the error message "the \$username was not found" is displayed. Because {\tt \$username} is a variable that has not been sanitized, an attacker can inject malicious payload in this field which will be interpreted by the HTML parser according to whatever its content is. 
 {\tt Exploit:} A victim is tricked into submitting a form located in an attacker-controlled website. This malicious form is designed to trigger the vulnerability found in the above login form. As soon as the form is submitted the vulnerable login page is opened with the XSS script executed in it. If the victim now tries to login, the XSS script can easily send the
@@ -94,7 +95,7 @@ Concurrency aims to speed up the overall performance of input/output (I/O) bound
 \begin{figure}[ht]
  \centering
  \includegraphics[width=\linewidth]{figures/concurrency_example.png}
- \caption{Requests over the internet processed in concurrent fashion ~\cite{concurrency_realpython}}
+ \caption{\textit{Requests over the internet processed concurrently} ~\cite{concurrency_realpython}}
  \label{fig:concurrency_example}
 \end{figure}
 

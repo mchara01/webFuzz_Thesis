@@ -3,11 +3,11 @@
 \minitoc
 \vspace*{1cm}
 
-This chapter is dedicated to the technical aspects involved while exploring some of the key characteristics that constitute \pname{}. In depth, we look at the coding standards used when developing this fuzzing tool, exploiting Asynchronous I/O to achieve concurrency in Python, the parsing procedure of a response and a user-friendly interface displaying statistics. Additionally, useful information is given about operating \pname{}.
+This chapter is dedicated to the technical aspects involved while exploring some of the key characteristics that constitute \pname{}. In depth, we look at the coding standards used when developing this fuzzing tool, exploiting Asynchronous I/O to achieve concurrency in Python, the parsing procedure of a response and a user-friendly interface displaying statistics. Additionally, we refer to other functionalities of \pname{} accompanied by useful information on how to operate our fuzzing tool.
 
 % NEW SECTION
 \section{Coding Standards}
-Guido van Rossum(creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, our main aim was to write clean, readable and eye-pleasing code by following best practice that the best professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for good programming habits and practices. 
+Guido van Rossum (creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, our aim was to write clean, readable and eye-pleasing code by following best practice that leading professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for good programming habits and standards. 
 
 More specifically, our fuzzing tool is fully written in Python 3.8 using the PEP 8 ~\cite{python_pep8} coding style standard and, regarding documentation, the PEP 257 ~\cite{python_pep257} and Sphinx ~\cite{sphinx} docstring conventions were adopted for it to be clear and easy to read for programmers. Pylint ~\cite{pylint_module} was also used to check for errors in Python code and to implement the aforementioned coding standards and search for code smells.
 
@@ -17,7 +17,7 @@ To enhance good practise, unit tests were created through which individual modul
 \section{Asynchronous I/O}
 \pname{} utilises concurrent programming (see Section ~\ref{sec:background}) with the help of the asyncio ~\cite{asyncio} Python module. In our case, asyncio has made it possible to send, continuously, HTTP requests to the target website while at the same time statistics on the fuzzing session are printed on the user's screen and a respective log file is updated. With assistance from the aforementioned module, some of the potential speed-bumps that we might otherwise encounter; such as logging request information to a file or waiting idly for a response for each request, were overcome, since any I/O operation caused by a blocking function does not forbid others from running. Conversely, it allows other functionalities to run from the time that it starts until the time that it returns. 
 
-Multiple asynchronous tasks (also known as routines) cooperate to let each other take turns running using the {\tt await} keyword, to yield optimal performance. This keyword enables tasks to pause while they wait for their results and let other tasks run in the meantime. This process is called cooperative multitasking and although it involves doing extra work up front, the benefit is that you always know when your task will be swapped out, thus optimising to yield better performance.
+Multiple asynchronous tasks (also known as routines) cooperate to let each ONE take turns running using the {\tt await} keyword, to yield optimal performance. This keyword enables tasks to pause while they wait for their results and let other tasks run in the meantime. This process is called cooperative multitasking and although it involves doing extra work up front, the benefit is that you always know when your task will be swapped out, thus optimising to yield better performance.
 
 To summarise, the concept of asyncio is that a single-threaded Python object, called the event loop, controls how and when each task is run. Each task can either be in ready state, which means that the task has work to do and is ready to be run while the waiting state means the task is waiting for some external thing to finish, such as a network operation. The event loop is aware of each task and knows what state it is in and maintains two lists of tasks, one for each of these states. 
 
@@ -28,13 +28,13 @@ It selects one of the ready tasks and then returns it back to running. That task
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/asyncio_process.jpg}
  \caption[AsyncIO mechanism]
- {AsyncIO mechanism; it provides a high-performance asynchronous frameworks for making our fuzzing requests ~\cite{asyncio_image_source}}
+ {\textit{AsyncIO mechanism; it provides a high-performance asynchronous frameworks for making our fuzzing requests} ~\cite{asyncio_image_source}}
  \label{fig:asyncio_image_source}
 \end{figure}
 
 Communication with the target's website is achieved with a rapidly fast asynchronous http client/server framework named aiohttp ~\cite{aiohttp}. The aiohttp module creates a reusable Session object per web application through which all requests are performed. Since our fuzzer works with one web application per execution, a single session is created, shared across all tasks, and reused for the entire execution of the program. The re-usability of the session is feasible because all tasks are running on the same thread. Pairing aiohttp with asyncio evidently speeds things up.
 
-It is important to note here that not all available Python modules are compatible with asyncio. For our requests, we could not use the default and recommended Python requests package, since it is built on top of {\tt urllib3 }, which in turn uses Python's http and socket modules. Socket operations are blocking and not  {\tt awaitable } which signals that Python will not like the {\tt await } statement. However, more modules are becoming compatible with asyncio ~\cite{aiohttp}.
+It is important to note here that not all available Python modules are compatible with asyncio. For our requests, we could not use the default and recommended Python requests package, since it is built on top of {\tt urllib3 }, which uses Python's http and socket modules. Socket operations are blocking and not  {\tt awaitable } which signals that Python will not like the {\tt await } statement. However, more modules are becoming compatible with asyncio ~\cite{aiohttp}.
 
 \section{Parser}
 The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after, of course, the respective request is made. Each response contains the HTML document which is then parsed using the {\tt  Beautiful Soup } ~\cite{beautiful_soup} module to extract the form and anchor elements from it. These elements are useful as they can provide us with new URLs which translate into potentially new code paths and bugs to further explore and locate. 
@@ -45,7 +45,7 @@ As the pseudo-code shows clearly, parsing relies heavily on the urllib.parse~\ci
 
 \begin{algorithm}
  
- \caption{Parsing new HTML documents method pseudocode.}
+ \caption{\textit{Parsing HTML documents method pseudocode}}
  \label{alg:parser_pseudocode}
  
  \begin{algorithmic}
@@ -79,11 +79,13 @@ As the pseudo-code shows clearly, parsing relies heavily on the urllib.parse~\ci
 \end{algorithm}
 
 \section{Curses Interface}
-A Textual User Interface (TUI) for \pname{} has been created using the curses module which contains information and essential statistics, gathered while our grey-box fuzzer is running. The curses library supplies a terminal-independent screen-painting and keyboard-handling facility for text-based terminals~\cite{curses}, such as the Linux console. The text editor \textit{nano} is a good example of a curses application. 
+A Textual User Interface (TUI) for \pname{} was created using the curses module which contains information and essential statistics, gathered while our grey-box fuzzer is running. The curses library supplies a terminal-independent screen-painting and keyboard-handling facility for text-based terminals~\cite{curses}, such as the Linux console. The text editor \textit{nano} is a good example of a curses application. 
 
 Unfortunately, this functionality is not available for Windows, as the Windows version of Python does not include the curses module. So by running our fuzzing tool on a Windows-based machine, regardless of the Command Line Interface (CLI) you opt to use, it will result in a crash. 
 
-There are of course ways to run \pname{} without this interface which will be explained in the next sub-section. Although many may think this is obsolete technology, it can prove to be  valuable for Unix-based operating systems that do not provide any graphical support. The Python module, which is the one we utilised, is a fairly simple wrapper over the \textit{C} functions provided by the first and original curses. A snapshot of the interface provided by webFuzz can be seen in Figure ~\ref{fig:curses_interface}. As illustrated, the statistics are divided into three categories; namely the process statistics, the overall progress and the examining node details.
+There are of course ways to run \pname{} without this interface which will be explained in the next sub-section. Although many may think this is obsolete technology, it can prove to be  valuable for Unix-based operating systems that do not provide any graphical support. The Python module, which is the one we utilised, is a fairly simple wrapper over the \textit{C} functions provided by the first and original curses. 
+
+A snapshot of the interface provided by webFuzz can be seen in Figure ~\ref{fig:curses_interface}. As illustrated, the statistics are divided into three categories; namely the process statistics, the overall progress and the examining node details.
 As the fuzzing tool expands, more valuable information is expected to be included on the interface.
 
 \begin{figure}[ht]
@@ -91,12 +93,47 @@ As the fuzzing tool expands, more valuable information is expected to be include
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/curses.png}
  \caption[Interface of webFuzz]
- {Interface of webFuzz. The interface is implemented using the Curses module}
+ {\textit{Interface of webFuzz. The interface is implemented using the Curses module}}
  \label{fig:curses_interface}
 \end{figure}
 
+\section{Interactive and Black-Box Functionalities}
+Our fuzzing tool also provides manual functionality. This allows the user to engage through an interactive session with our fuzzer. After the user provides the target to be fuzzed, a connection is established and the session begins. Before a request is made, forms are extracted from the target and all input fields are presented to the user. The user can choose from a menu of options on which fields to fuzz and how. More specifically, the options consist of filling the fields with manually inserted data, XSS payloads from the corpus seen in Table \ref{xss_payload_tables} or choosing to mutate data using a basic mutating function. 
+
+Mutating functions for a given input provided include deleting random characters, inserting characters at random places and flipping random characters. The user must insert manually any different link desired to be fuzzed, as no crawling process is provided. At Listing ~\ref{lst:interactive_mode}, we can see a code snippet of the interactive mode. 
+
+The user can switch at any time to a more automated, brute-forcing type session where input fields of the forms at the given fuzz target are filled with XSS payloads with no need of interruption from the user. This brings us to the black-box fuzzing capabilities also provided by our fuzzing tool. When choosing to fuzz in a black-box fashion, everything that we have mentioned still applies, as the core functionalities are shared between the two. The only aspect that is not taken into account with this approach, is of course, the instrumentation.
+
+This thesis only aims to demonstrate the capabilities of \pname{} as a grey-box fuzzer, therefore no rigorous testing was conducted to prove its efficacy. Thus, no further discussion is made on its interactive and black-box functionalities.
+
+\begin{lstlisting}[aboveskip=\baselineskip, showstringspaces=false, frame=single, language=Python, columns=flexible, keepspaces=true, caption={\textit{Options menu and their processing during interactive mode fuzzing}}, numberstyle=\color{gray}, numbersep=5pt, label={lst:interactive_mode}]
+def fuzz():
+   . . .
+   print("Please choose one of the following fuzzing methods:")
+   print("(1) Select a random XSS payload from corpus")
+   print("(2) Mutate previous inputs")
+   print("(3) Manually insert data")
+   print("(4) Switch to Black-box fuzzing")
+   print("(5) Enter new link to fuzz")
+   ans = input()
+   
+   if ans == "1":
+       data[str(i)] = str(xss_fuzzing_payload())
+   elif ans == "2":
+       choose_mutating_function(data[str(i)])
+   elif ans == "3":
+       value = input("Insert data for {}: ".format(i))
+       data[str(i)] = value
+   elif ans == "4":
+       black_box_fuzzing()
+   elif ans == "5":
+       link = input("Insert new link")
+   . . .
+     
+\end{lstlisting}
+
 \section{Running webFuzz}
-Running \pname{} is straightforward. All necessary modules accompanied with their exact version needed to be installed for \pname{} to work smoothly. These are listed in a "requirements" text file. Other executing and installing dependency instructions can be found at the README.md file in the tool's repository.
+Running \pname{} is straightforward. All necessary modules accompanied with their exact version needed to be installed for \pname{} to operate smoothly. These are listed in a "requirements" text file. Other executing and installing dependency instructions can be found at the README.md file in the tool's repository.
 
 A help menu that shows all available arguments in which \pname{} can run in, are shown in Figure ~\ref{fig:argparser_menu}. As you can see, arguments are separated in three categories; namely \emph{Optional}, \emph{Required} and \emph{Positional}. Optional arguments are extra functionalities that you do not have to include when running the tool, whereas Required and Positiona are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the argparse~\cite{argparse} Python module was used.
 
@@ -106,39 +143,6 @@ Also, throughout the execution, logging is used as a means of tracking events th
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/argparser_menu.jpg}
- \caption[\pname{} usage menu]{\pname{} usage menu includes all available arguments which we can use to run it with}
+ \caption[\pname{} usage menu]{\textit{\pname{} usage menu includes all available arguments which we can use to run it}}
  \label{fig:argparser_menu}
 \end{figure}
-
-\section{Interactive and Black-Box Functionalities}
-Our fuzzing tool provides manual functionality also. This functionality allows the user to engage through an interactive session with our fuzzer. After the user provides the target to be fuzzed, a connection its establish and the session begins. Before a request is made, forms are extracted from the target and all input fields are presented to the user. Then, the user chooses from a menu of option which fields to fuzz and how. More specifically, options consist of filling the fields with manually inserted data, with XSS payloads from the corpus previously seen at Table \ref{xss_payload_tables} or choosing to mutate data using a basic mutating function. Mutating functions for a given input provided include deleting random characters, inserting characters ate random places and flipping random characters. The user must insert manually any different link desired to be fuzzed, as no crawling process is provided. At Listing ~\ref{lst:interactive_mode}, we can see a code snippet of the interactive mode. 
-
-\begin{lstlisting}[showstringspaces=false, frame=single, language=Python, caption={Options menu and their processing during interactive mode fuzzing}, numberstyle=\color{gray}, numbersep=5pt, label={lst:interactive_mode}]
-def fuzz():
-	....
-	print("Please choose one of the following fuzzing methods:")
-	print("(1) Select a random XSS payload from corpus")
-	print("(2) Mutate previous inputs")
-	print("(3) Manually insert data")
-	print("(4) Switch to Black-box fuzzing")
-	print("(5) Enter new link to fuzz")
-	ans = input()
-     	    					
-    if ans == "1":
-		data[str(i)] = str(xss_fuzzing_payload())
-	elif ans == "2":
-		choose_mutating_function(data[str(i)])
-	elif ans == "3":
-		value = input("Insert data for {}: ".format(i))
-		data[str(i)] = value
-	elif ans == "4":
-		black_box_fuzzing()
-	elif ans == "5":
-		link = input("Insert new link")
-     ...
-     
-\end{lstlisting}
-
-The user can opt to switch at any time to a more automated, brute-forcing like session where input fields of the forms at the given fuzz target are filled with XSS payloads, needless of interruption from the user. This brings us to the black-box fuzzing capabilities also provided by our fuzzing tool. When choosing to fuzz in a black-box fashion, everything that we mention this far still applies, as the core functionalities are shared between the two. The only thing that it not taken into consideration with this approach, is of course, the instrumentation.
-
-As this thesis aims to demonstrate the capabilities of \pname{} as a grey-box fuzzer and because no rigorous tests have been conducted to show the efficacy, no further discussion is made in regards to its interactive and black-box functionalities.

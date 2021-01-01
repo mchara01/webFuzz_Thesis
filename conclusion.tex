@@ -2,15 +2,15 @@
 \label{sec:conclusion}
 \vspace*{0.25cm}
 
-Fuzzing has evolved significantly in analysing native applications, becoming a hot field for research for many. While it is used extensively to uncover many important bugs and security vulnerabilities in native apps, web applications have received limited attention, so far.
+Fuzzing has evolved significantly in analysing native applications, becoming a hot field for research. While it is used extensively to uncover destructive bugs and security vulnerabilities in native apps, web applications have received limited attention.
 
 In this thesis, we presented \pname{}, a prototype open-source grey-box fuzzer for discovering Cross-Site Scripting vulnerabilities in web applications. \pname{} utilizes instrumentation on the target web application for producing a \emph{feedback loop} and employing it to boost code coverage score. Consequently, it increases the total of potential vulnerabilities found.
 
-Furthermore, for the evaluation of \pname{} we used two web applications; namely WordPress and Drupal, for the the following metrics: competence in detecting Reflected Cross-Site Scripting bugs, Throughput and Global Code Coverage.
+For the evaluation of \pname{} we used two web applications; namely WordPress and Drupal, for the following three metrics: competence in detecting Reflected Cross-Site Scripting bugs, Throughput and Global Code Coverage.
 
-Regarding the first metric, \pname{} was able to detect the most artificially injected vulnerabilities compared to the other three black-box fuzzers in test. More specifically it was able to weed out \emph{30} bugs with the second on being Wfuzz with \emph{28}.
+Regarding the first metric, \pname{} was able to detect the most artificially injected vulnerabilities compared to the other three black-box fuzzers in the test. More specifically, it was able to weed out \emph{30} bugs followed by Wfuzz with \emph{28}.
 
-Also, in terms of throughput, unfortunately currently \pname{} does not match the throughput of native applications fuzzers such as AFL nor black-box web-app fuzzers such as Wfuzz as the overhead from the instrumentation seems to be hefty.
+Secondly, in terms of throughput, unfortunately, for now, \pname{} does not match the throughput of native applications fuzzers such as AFL nor black-box web-app fuzzers such as Wfuzz as the overhead from the instrumentation is hefty.
 
-Other findings suggest that our fuzzing tool can achieve coverage of the entire WordPress and Drupal code as high as \emph{21.5\%} and \emph{30\%} respectively, in a roughly 50 hours fuzzing session.
+Other outcomes in our third metric, suggest that our fuzzing tool can achieve coverage of the WordPress and Drupal codebase up to \emph{21.5\%} and \emph{30\%} respectively, in roughly 50 hours of fuzzing.
 

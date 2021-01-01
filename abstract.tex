@@ -3,22 +3,26 @@
 Testing software is a common practice for exposing unknown vulnerabilities
 in security-critical programs that can be exploited with malicious intent.
 A bug-hunting method that has proven to be very effective is a technique
-called fuzzing. Specifically, this type of software testing has been in the
+called fuzzing. 
+
+Specifically, this type of software testing is frequently in the
 form of fuzzing of native code, which includes subjecting the program to
 enormous amounts of unexpected or malformed inputs in an automated fashion.
+
 This is done to get a view of their overall robustness to detect and fix
 critical bugs or possible security loopholes. For instance, a program crash
-when processing a given input may be a signal for memory-corruption
+when processing a given input may be a signal of memory-corruption
 vulnerability.
 
-Although fuzzing significantly evolved in analysing native code, web
-applications, invariably, have received limited attention, so far. This thesis
-explores the technique of gray-box fuzzing of web applications and the
-construction of a fuzzing tool that automates the process of discovering
-bugs in web applications.
+Although fuzzing has significantly evolved in analysing native code, web
+applications, invariably, have received limited attention until now. 
 
-We design, implement and evaluate webFuzz, which is a prototype grey-box
-fuzzer for web applications. WebFuzz leverages instrumentation for successfully
+This thesis explores the technique of gray-box fuzzing of web applications and the
+construction of a fuzzing tool that automates the process of discovering
+bugs in web applications. We design, implement and evaluate webFuzz, which is a prototype grey-box
+fuzzer for web applications. 
+
+WebFuzz leverages instrumentation for successfully
 detecting reflective Cross-Site Scripting (XSS) vulnerabilities faster than other
 black-box fuzzers. The functionality of webFuzz is demonstrated using web applications
 written in PHP; namely WordPress and Drupal.
