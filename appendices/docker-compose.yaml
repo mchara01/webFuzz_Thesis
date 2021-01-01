@@ -1,5 +1,4 @@
 version: '3.3'
-
 services:
   mariadb:
     image: mariadb:10.5
@@ -35,6 +34,6 @@ services:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/wordpress:/var/www/html
     ports:
-      - 8080:80 # Host machine port 8080 mapped to the container port 80.
+      - 8080:80 # Host port 8080 mapped to the container port 80.
     links:
       - wordpress

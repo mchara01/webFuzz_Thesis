@@ -14,9 +14,9 @@ coverage-based fuzzers. Otherwise, we have the directed based fuzzers that use f
 
 A renowned fuzzer that is classified as coverage-based is AFL ~\cite{zalewski2015american}. AFL is a state-of-the-art grey-box fuzzer which is the foundation for the majority of recently-proposed research. However, AFL fails to intelligently generate inputs to explore deep paths in programs that are hidden behind checksums or magic number \emph{if} statements.
 
-Having this in mind, recent research makes use of symbolic and concolic execution to enhance the input generation procedure by extracting valuable information about the program. Some examples consist of DRILLER ~\cite{stephens2016driller}, DART ~\cite{godefroid2005dart} and SAGE ~\cite{godefroid2012sage}. 
+Having this in mind, recent research makes use of symbolic and concolic execution to enhance the input generation procedure by extracting valuable information about the program. Some examples consist of DRILLER ~\cite{stephens2016driller}, DART ~\cite{godefroid2005dart} and SAGE ~\cite{godefroid2012sage}. DRILLER is also an example of hybrid vulnerability searching tool as it combines fuzzing and symbolic execution.
 
-In spite of efforts to improve the fuzzing process with the use of symbolic/concolic execution-based fuzzers, it has been highlighted that these types of fuzzers suffer from scalability problems because when fuzzing sizeable targets, we notice the problem of state explosion ~\cite{Clarke2012}. This problem is observed when the number of state variables in the system increases, the size of the system state space grows exponentially making it impossible to explore the entire state space with limited resources of time and memory.
+In spite of efforts to improve the fuzzing process with the use of symbolic/concolic execution-based fuzzers, it has been highlighted that these types of fuzzers suffer from scalability problems because when fuzzing sizeable targets, we notice the problem of state/path explosion ~\cite{Clarke2012}. This problem is observed when the number of state variables in the system increases, the size of the system state space grows exponentially making it impossible to explore the entire state space with limited resources of time and memory. While trying to explore every path in the code (\ie for a conditional branch, they often create an input that causes the branch to be taken and another that does not) they succumb to path explosion, greatly limiting their scalability.
 
 Consequently, other research proposals try to accomplish what symbolic/concolic execution-based fuzzers offer with a less expensive approach. One example is REDQUEEN ~\cite{aschermann2019redqueen} that utilizes the input-to-state correspondence to infer the values that would later be used to try and control them. Another such example is VUzzer ~\cite{rawat2017vuzzer}, an application-aware evolutionary fuzzer that leverages control and data-flow features using static and dynamics analysis to infer fundamental properties of the fuzz target.
 
@@ -35,7 +35,7 @@ application vulnerabilities by collecting information about the target extracted
 White-box methods outperform black-box approaches by having access to the source code of the target being fuzzed. However, black-box processes are more scalable when the source code is not 
 available. 
 
-To conclude, web vulnerability scanners are also realized through static analysis tools. Prime examples are Pixy ~\cite{jovanovic2006pixy} which uses static analysis at the source code
+To conclude, web vulnerability scanners are also realized through static analysis tools~\cite{balzarotti2008saner,jovanovic2006pixy,jovanovic2006precise,medeiros2014mining,medeiros2016dekant}. Prime examples are Pixy ~\cite{jovanovic2006pixy} which uses static analysis at the source code
 level to detect vulnerable code. Another tool combining static and dynamic analysis is Saner ~\cite{balzarotti2008saner} which tries to identify any sanitization processes that do not work as expected to, resulting in allowing attackers to introduce exploits.
 
 Contrary to the above research work for identifying web vulnerabilities, our technique adopts the

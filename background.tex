@@ -6,9 +6,9 @@
 In this chapter we provide background information giving a detailed understanding on several key points about this thesis. First, we define what a Cross-Site Scripting bug is in web applications, and elaborate by giving a specific example on how this vulnerability may occur. Then, we briefly discuss what fuzzing is and the various categories that constitute it and show how instrumentation helps when used during gray-box fuzzing. Towards the end, this chapter discusses the concept of concurrency in Python and concludes with the containerization of services using Docker.
 
 \section{Web Application Bugs}
-The internet has been growing exponentially since its commercial inception in 1969 with the creation of ARPANET. Although there are over 1 billion pages currently on-line, writing a web application so that it is secure from any vulnerability, can be extremely difficult. Every significant web application, especially large-scale ones that are composed with thousands of lines of code, have bugs in them. EG TWITTER Even the simplest web-apps can be thIe root of irreparable damage when they are exploited by attackers with ulterior motives. 
+The internet has been growing exponentially since its commercial inception in 1969 with the creation of ARPANET. Although there are over 1 billion pages currently on-line, writing a web application so that it is secure from any vulnerability, can be extremely difficult. Every significant web application, especially large-scale ones that are composed with thousands of lines of code(LoC), have bugs in them. Established social-networking site Facebook had bags in its 100 million LoC that resulted in exposure of the personal information of nearly 50 million users ~\cite{facebook_data_breach,facebook_loc}. These problems are not exclusive to enormous web applications only. Even the simplest web-apps can be the root of irreparable damage when they are exploited by attackers with ulterior motives. 
 
-In fact, web application vulnerabilities are among the most frequent vulnerabilities reported in the Common Vulnerabilities and Exposures database (CVE). According to CVE 2019 data, Denial of Service (19.2\%) (DoS) is ranked second and Cross-Site Scripting (XSS) (12.5\%) is fourth among the top Cybersecurity vulnerabilities ~\cite{cve}.
+In fact, web application vulnerabilities are among the most frequent vulnerabilities reported in the Common Vulnerabilities and Exposures database (CVE). According to CVE 2019 data, Denial of Service  (DoS) (19.2\%) is ranked second and Cross-Site Scripting (XSS) (12.5\%) is fourth among the top Cybersecurity vulnerabilities ~\cite{cve}.
 
 The Open Web Application Security Project (OWASP) Top 10 represents a broad consensus on the most critical security risks to web applications ~\cite{owasp2017}. One of the most pressing security problems on the Internet, according to the OWASP list, is Cross-Site Scripting (ranked 7).
 
@@ -40,7 +40,7 @@ if (search_username($username)) {
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/storedxss.pdf}
- \caption{\textit{How Stored Cross-Site Scripting can be exploited by an attacker}}
+ \caption[How Stored Cross-Site Scripting can be exploited by an attacker]{\textit{How Stored Cross-Site Scripting can be exploited by an attacker}}
  \label{fig:storedxss}
 \end{figure}
 
@@ -48,7 +48,7 @@ if (search_username($username)) {
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/reflectedxss.pdf}
- \caption{\textit{How Reflected Cross-Site Scripting can be exploited by an attacker}}
+ \caption[How Reflected Cross-Site Scripting can be exploited by an attacker]{\textit{How Reflected Cross-Site Scripting can be exploited by an attacker}}
  \label{fig:reflectedxss}
 \end{figure}
 
@@ -62,13 +62,11 @@ The input must be sanitized. User input containing HTTP code needs to be escaped
 \section{Fuzzing}
 A promising method for discovering unknown vulnerabilities in programs and web applications proven to be very effective, is a technique called fuzzing (or fuzz testing) ~\cite{fuzzing_def}. Fuzzing was originally introduced by Barton Miller at the University of Wisconsin, as one of several tools to test UNIX utilities ~\cite{mller1990fuzz}. With this quality assurance technique, software is exercised using a vast number of anomalous inputs for inferring if any of them introduce security-related side-effects. A fuzzer, which is the tool that can automate the aforementioned stress-testing process, can be categorized in relation to its awareness of the program structure as black-, white-, or gray-box ~\cite{fuzzing_book}. 
 
-A black-box fuzzer treats the program as a 'black box' and is unaware of
-internal program structure. It conducts its test on the target through external
-interfaces and produces random inputs using no information of the target's underlying structure. More often than not, black-box fuzzers are only able to scratch the surface and expose "shallow" bugs ~\cite{fuzzing_owasp}. 
+A black-box fuzzer treats the program as a 'black box' and is unaware of internal program structure. It conducts its test on the target through external interfaces and produces random inputs using no information of the target's underlying structure. More often than not, black-box fuzzers are only able to scratch the surface and expose "shallow" bugs ~\cite{fuzzing_owasp}. An example to prove this may be the following; the branch of the conditional statement "{\tt if x==5:}" has only one in 2^32 chance of being executed if {\tt x} is a randomly chosen 32-bit input value (\ie an integer). This intuitively explains why black-box testing usually provides low code coverage and why it is not able to uncover bugs nested deep in the program ~\cite{Godefroid2008AutomatedWF}.
 
 A white-box fuzzer infers source code knowledge, such as source code auditing, to reveal
 flaws in the software. It leverages program analysis to systematically
-increase code coverage or to reach certain critical program locations. Program analysis can be based on either static or dynamic analysis, or their combination ~\cite{program_analysis_book}. They may also leverage symbolic execution to derive what inputs cause each part of a program to execute ~\cite{symbolic_exe}. This makes them very effective at exposing bugs that hide deep in the program. By studying the application code, you may be able to detect optional or proprietary features, which should be tested as well.
+increase code coverage or to reach certain critical program locations. Program analysis can be based on either static or dynamic analysis, or their combination ~\cite{program_analysis_book}. They may also leverage symbolic execution to derive what inputs cause each part of a program to execute ~\cite{king1976symoblic}. This makes them very effective at exposing bugs that hide deep in the program. By studying the application code, you may be able to detect optional or proprietary features, which should be tested as well.
 
 A fuzzer is considered gray-box when it leverages instrumentation rather than program analysis to glean information about the coverage of a generated input from the program it tries to fuzz ~\cite{zalewski2015american,efs2007}. This thesis explores in detail gray-box fuzzing, which combines elements of the white-box and black-box approaches since it uses the internals of the software, to a minimal extent, to help generate better test cases without needing full access to the code. 
 
@@ -95,7 +93,7 @@ Concurrency aims to speed up the overall performance of input/output (I/O) bound
 \begin{figure}[ht]
  \centering
  \includegraphics[width=\linewidth]{figures/concurrency_example.png}
- \caption{\textit{Requests over the internet processed concurrently} ~\cite{concurrency_realpython}}
+ \caption[Requests over the internet processed concurrently]{\textit{Requests over the internet processed concurrently} ~\cite{concurrency_realpython}}
  \label{fig:concurrency_example}
 \end{figure}
 
