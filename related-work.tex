@@ -7,7 +7,7 @@ In this chapter all relevant, recognised or related academic work achieved in re
 
 \section{Generic Fuzzing}
 Fuzzing has been perceived through several techniques and algorithms over the years. Firstly, we have the black-box fuzzers ~\cite{householder2012probability,sparks2007automated,woo2013scheduling} which are unaware of the fuzz target's internals and try to trigger vulnerabilities by randomly generating the inputs. While the black-box fuzzers category might not be as performant as others, they offer
-the advantage of compatibility with any program ~\cite{osterlund2020parmesan,rawat2017vuzzer}. The other two categories are white- and grey-box fuzzers. These two leverage instrumentation to obtain feedback concerning the inputs' precision in discovering unseen paths. 
+the advantage of compatibility with any program ~\cite{osterlund2020parmesan,rawat2017vuzzer}. The other two categories are white- and grey-box fuzzers. These two leverage \emph{instrumentation} to obtain feedback concerning the inputs' precision in discovering unseen paths. 
 
 It is proven that feedback is vital for a fuzzer's performance since it can be used to steer the fuzzer towards exploring new code paths, resulting in better code coverage also known as
 coverage-based fuzzers. Otherwise, we have the directed based fuzzers that use feedback to direct the fuzzer towards particular execution paths ~\cite{godefroid2005dart}.
@@ -39,4 +39,4 @@ To conclude, web vulnerability scanners are also realized through static analysi
 level to detect vulnerable code. Another tool combining static and dynamic analysis is Saner ~\cite{balzarotti2008saner} which tries to identify any sanitization processes that do not work as expected to, resulting in allowing attackers to introduce exploits.
 
 Contrary to the above research work for identifying web vulnerabilities, our technique adopts the
-grey-box approach. \pname{} instruments the fuzz target to receive feedback on whether a generated input is interesting. These inputs are used to generate other test cases that will hopefully result in wider code coverage that could possibly trigger more vulnerabilities. Unlike other fuzzers mentioned who generate their own XSS payloads ~\cite{duchene2014kameleonfuzz}, our tool's  main objective is finding trigger points on the target web application and supplying them with known XSS payloads.
+grey-box approach. \pname{} \emph{instrumentation} the fuzz target to receive feedback on whether a generated input is interesting. These inputs are used to generate other test cases that will hopefully result in wider code coverage that could possibly trigger more vulnerabilities. Unlike other fuzzers mentioned who generate their own XSS payloads ~\cite{duchene2014kameleonfuzz}, our tool's  main objective is finding trigger points on the target web application and supplying them with known XSS payloads.

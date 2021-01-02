@@ -20,7 +20,7 @@ Using Docker, and its docker-compose functionality, we were able to achieve a mu
 
 \begin{itemize}
 	\item \emph{NGINX}: An open-source, high-performance HTTP server which handles all the HTTP request made by \pname{} and forwarded to our WordPress or Drupal web applications.{~\cite{nginx}}
-	\item \emph{WordPress and Drupal}: Both open-source CMS web application. Since having access to the code, we began by examining the existing system in terms of injecting bugs and performing our instrumentation.
+	\item \emph{WordPress and Drupal}: Both open-source CMS web application. Since having access to the code, we began by examining the existing system in terms of injecting bugs and performing our \emph{instrumentation}.
 	\item \emph{MariaDB}: A popular open source relational databases which we used to store and manipulate the WordPress data~\cite{mariadb}.
 \end{itemize}
 
@@ -39,7 +39,7 @@ Evaluating fuzzing processes proved to be a challenging task ~\cite{klees2018Eva
 
 Injecting vulnerabilities in web code was a demanding task, since the necessary tools for analysing native code and injecting vulnerabilities (\eg taint-tracking and information-flow frameworks), are not available for web applications. 
 
-To overcome the lack of available tools, the vulnerability injection methodology \textit{Centaur} uses, leverages the instrumentation infrastructure we used for building \pname{}. The automated bug-injection method is able to inject hundreds of common vulnerabilities such as Reflected Cross-Site Scripting in reasonable time. Details about the automated vulnerability addition (\textit{Centaur}), like the instrumentation, are not in the scopes of this thesis.
+To overcome the lack of available tools, the vulnerability injection methodology \textit{Centaur} uses, leverages the \emph{instrumentation} infrastructure we used for building \pname{}. The automated bug-injection method is able to inject hundreds of common vulnerabilities such as Reflected Cross-Site Scripting in reasonable time. Details about the automated vulnerability addition (\textit{Centaur}), like the \emph{instrumentation}, are not in the scopes of this thesis.
 
 \section{Evaluation Details}
 For the evaluation of \pname{}'s performance we used two Ubuntu 18.04 LTS Linux machines both possessing a 3.20 GHz quad-core Intel® Xeon® W-2104 Processor and 64GB of RAM. Targeted web applications consist of (a) an instrumented WordPress 5.5.1 with artificial bugs (b) a vanilla  WordPress 5.5.1 with artificial bugs, and (c) an instrumented Drupal 9.0.6. The term vanilla refers to web-apps in their original form, with no customization or frameworks added to them. 
@@ -102,13 +102,13 @@ To make a fair comparison of the vulnerability detecting capabilities of \pname{
 
 The results of our 65-hour experiment, comparing Wfuzz and \pname{} in terms of artificial RXSS bugs found can be seen in Figure ~\ref{fig:plot_rxss}. Although \pname{} has the lead through the entire experiment, the difference decreased until the end when it became marginal. \pname{} uncovered 30 artificial bugs, two more than the Wfuzz's 28.
 
-By taking advantage of the instrumentation feedback-loop, \pname{} could detect the artificial bugs faster than Wfuzz's brute force approach. Whenever a digit of a magic
+By taking advantage of the \emph{instrumentation feedback loop}, \pname{} could detect the artificial bugs faster than Wfuzz's brute force approach. Whenever a digit of a magic
 number, situated in a vulnerable payload, is guessed correctly our fuzzing tool will detect this change and prioritize the request that causes it. 
 
-Using this method, finding a magic number is done in an incremental fashion - one correct digit at a time - which is much faster than guessing the whole number at once like Wfuzz does. As a real world analogy, each digit of the magic number can represent one correct mutation that brings us closer to the vulnerable basic block. A reason for the gradual decrease of webFuzz's detection performance lies in its growing request queue size. WordPress is composed out of approximately half a million Lines of Code(LoC), with 48,040 basic blocks instrumented in total.
+Using this method, finding a magic number is done in an incremental fashion - one correct digit at a time - which is much faster than guessing the whole number at once like Wfuzz does. As a real world analogy, each digit of the magic number can represent one correct mutation that brings us closer to the vulnerable basic block. A reason for the gradual decrease of webFuzz's detection performance lies in its growing request queue size. WordPress is composed out of approximately half a million LoC, with 48,040 basic blocks instrumented in total.
 
 \section{Global Code Coverage}
-Utilizing the instrumentation feedback, \pname{} has calculated the Global Code Coverage for WordPress, Drupal, Firefly-III and Mautic. For these four PHP open-sourced projects we decided to test only the authenticated session scenarios as the unauthenticated session would prevent us accessing various links such as the administrative dashboard related links. In Figure ~\ref{fig:plot_coverage}, we can see how the aforementioned metric changed over time in the four authenticated session scenarios.
+Utilizing the \emph{instrumentation} feedback, \pname{} has calculated the Global Code Coverage for WordPress, Drupal, Firefly-III and Mautic. For these four PHP open-sourced projects we decided to test only the authenticated session scenarios as the unauthenticated session would prevent us accessing various links such as the administrative dashboard related links. In Figure ~\ref{fig:plot_coverage}, we can see how the aforementioned metric changed over time in the four authenticated session scenarios.
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage.pdf}
@@ -117,7 +117,7 @@ Utilizing the instrumentation feedback, \pname{} has calculated the Global Code 
   \label{fig:plot_coverage}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[h]
 \centering
  \begin{tabular}{@{}|l|l|l|@{}}
  \hline
@@ -127,7 +127,7 @@ Utilizing the instrumentation feedback, \pname{} has calculated the Global Code 
  \hline\hline
  Drupal & 6000 / 4.2 & 27.3 \\ 
  \hline
- WordPress & 3200 / 2.2 & 24 \\ 
+ WordPress & 6000 / 4.2 & 21.5 \\ 
  \hline
  Firefly-III & 1900 / 1.3 & 9.7 \\ 
  \hline
@@ -140,9 +140,9 @@ Utilizing the instrumentation feedback, \pname{} has calculated the Global Code 
  \label{coverage_table}
 \end{table}
 
-Our experiment show that the two main web applications of our evaluation, Drupal and WordPress, accrued the most basic-block coverage with \emph{27.3\%} and \emph{24\%} respectively. Firefly-III was stopped after 1.3 days as the coverage remain static at \emph{9.7\%} during the entire time. In the case of the fourth fuzz target Mautic, we agreed to terminate this test early (0.7 days) as the throughput was arduously slow in order to reach a desired level of code coverage within a reasonable timeframe (see Table ~\ref{coverage_table}). 
+Our experiment show that the two main web applications of our evaluation, Drupal and WordPress, accrued the most basic-block coverage with \emph{27.3\%} and \emph{21.5\%} respectively. Firefly-III was stopped after 1.3 days as the coverage remain static at \emph{9.7\%} during the entire time. In the case of the fourth fuzz target Mautic, we agreed to terminate this test early (0.7 days) as the throughput was arduously slow in order to reach a desired level of code coverage within a reasonable timeframe (see Table ~\ref{coverage_table}). 
 
-An important thing to note here is that the code coverage achieved by \pname{} in the Drupal scenario indicates a steady rise in the global code coverage even after 6000 minutes of execution time. A good signal that the mutation functions used are effective enough to trigger new code paths, even after the crawling process has finished. Although WordPress also made gains in code coverage (\emph{24\%}) it effectively levelled-out after 128 minutes in the 4.2-day test run.
+An important thing to note here is that the code coverage achieved by \pname{} in both the Drupal and WordPress scenarios indicate a steady rise in the global code coverage even after 6000 minutes of execution time. A good signal that the mutation functions used are effective enough to trigger new code paths, even after the crawling process has finished. 
  
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage2.pdf}
@@ -151,12 +151,11 @@ An important thing to note here is that the code coverage achieved by \pname{} i
   \label{fig:plot_coverage2}
 \end{figure}
 
-In Figure ~\ref{fig:plot_coverage2} we can see the Global Code Coverage achieved by a black-box fuzzer, Wfuzz, when fuzzing WordPress using an authenticated session. The peak of this experiment was reached in roughly \emph{3.5} days (5000 minutes) when code coverage of \emph{14.613\%} was reached. This experiment was done solely to check how well a black-box fuzzer performs in terms of code coverage against a gray-box fuzzer, like \pname{}, that leverages instrumentation feedback. 
+In Figure ~\ref{fig:plot_coverage2} we can see the Global Code Coverage achieved by a black-box fuzzer, Wfuzz, when fuzzing WordPress using an authenticated session. The peak of this experiment was reached in roughly \emph{3.5} days (5000 minutes) when code coverage of \emph{14.613\%} was reached. This experiment was done solely to check how well a black-box fuzzer performs in terms of code coverage against a gray-box fuzzer, like \pname{}, that leverages \emph{instrumentation} feedback. 
 
-When looking at both Figures ~\ref{fig:plot_coverage} and ~\ref{fig:plot_coverage2} we can safely surmise that the instrumentation feedback provides \pname{} the edge needed to surpass the performance of Wfuzz. More precisely, when both were fuzzing WordPress with an authenticated session, \pname{} managed to get almost \emph{1.5} times higher code coverage than Wfuzz. Wfuzz was left running for a much longer time than \pname{} but with no luck since it stayed stagnant on the score it achieved in 3.5 days at \emph{14.613\%}.
+When looking at both Figures ~\ref{fig:plot_coverage} and ~\ref{fig:plot_coverage2} we can safely surmise that the \emph{instrumentation} feedback provides \pname{} the edge needed to surpass the performance of Wfuzz. More precisely, when both were fuzzing WordPress with an authenticated session, \pname{} managed to get almost \emph{1.5} times higher code coverage than Wfuzz. Wfuzz was left running for a much longer time than \pname{} but with no luck since it stayed stagnant on the score it achieved in 3.5 days at \emph{14.613\%}.
 
 \section{Throughput}
-One reason for the effectiveness of fuzzers in uncovering vulnerabilities is their capability to test vast amounts of inputs per second. It is essential that the overhead caused by instrumentation does not severely degrade the web application's response time and the fuzzer's processing time for each request is kept as brief as possible.
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_throughput.pdf}
@@ -165,7 +164,9 @@ One reason for the effectiveness of fuzzers in uncovering vulnerabilities is the
   \label{fig:plot_throughput}
 \end{figure}
 
-As observed in Figure ~\ref{fig:plot_throughput}, the black-box version of Wfuzz has about \emph{3} times higher throughput than \pname{} in the case of Drupal and \emph{4.5} times in WordPress. This is plausible as the overhead added from instrumentation roughly doubles the page response time in the case of WordPress, and due to webFuzz's increased statefulness in tracking, analysing and ranking all the requests, it increases the per-request processing time.
+One reason for the effectiveness of fuzzers in uncovering vulnerabilities is their capability to test vast amounts of inputs per second. It is essential that the overhead caused by \emph{instrumentation} does not severely degrade the web application's response time and the fuzzer's processing time for each request is kept as brief as possible.
+
+As observed in Figure ~\ref{fig:plot_throughput}, the black-box version of Wfuzz has about \emph{3} times higher throughput than \pname{} in the case of Drupal and \emph{4.5} times in WordPress. This is plausible as the overhead added from \emph{instrumentation} roughly doubles the page response time in the case of WordPress, and due to webFuzz's increased statefulness in tracking, analysing and ranking all the requests, it increases the per-request processing time.
 
 After 2,048 minutes in WordPress using \pname{}, with an authenticated session established, the throughput plummets for a lengthy period. This implies that the fuzzer was stuck on fuzzing particular links that have lofty response times. The fact that the fuzzer keeps on fuzing these links means that they have have a high coverage score and mutating them is effective enough to trigger new code paths in them.
 
