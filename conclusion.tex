@@ -8,9 +8,6 @@ In this thesis, we presented \pname{}, a prototype open-source grey-box fuzzer f
 
 For the evaluation of \pname{} we used two web applications; namely WordPress and Drupal, for the following three metrics: competence in detecting Reflected Cross-Site Scripting bugs, Throughput and Global Code Coverage.
 
-Regarding the first metric, \pname{} was able to detect the most artificially injected vulnerabilities compared to the other three black-box fuzzers in the test. More specifically, it was able to weed out \emph{30} bugs followed by Wfuzz with \emph{28}.
+Regarding the first metric, \pname{} was able to detect the most artificially injected vulnerabilities compared to the other three black-box fuzzers in the test. More specifically, it was able to weed out \emph{30} bugs followed by Wfuzz with \emph{28}. Secondly, in terms of throughput, unfortunately, for now, \pname{} does not match the throughput of native applications fuzzers such as AFL nor black-box web-app fuzzers such as Wfuzz as the overhead from the instrumentation is hefty. Other outcomes in our third metric, suggest that our fuzzing tool can achieve coverage of the WordPress and Drupal codebase up to \emph{24\%} and \emph{27.3\%} respectively, in roughly 4 days of fuzzing.
 
-Secondly, in terms of throughput, unfortunately, for now, \pname{} does not match the throughput of native applications fuzzers such as AFL nor black-box web-app fuzzers such as Wfuzz as the overhead from the instrumentation is hefty.
-
-Other outcomes in our third metric, suggest that our fuzzing tool can achieve coverage of the WordPress and Drupal codebase up to \emph{21.5\%} and \emph{30\%} respectively, in roughly 50 hours of fuzzing.
-
+Following a "borderline" rejection on the initial submission of this thesis at CODASPY 2021, the due modifications and clarifications were made, giving us confidence that a more comprehensive study will be accepted when resubmitted to DIMVA 2021 for publication.

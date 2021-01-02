@@ -5,7 +5,7 @@
 
 This chapter illustrates the general design of the fuzzer without going into too much technical detail. The in-depth breakdown of the fuzzer's components is thoroughly described in Chapter ~\ref{sec:implementation}. The key components elaborated on in this chapter are the high-level working view of \pname{}, the mutations made to the requests, and the different vulnerabilities in web applications that \pname{} is designed to detect.
 
-\section{A Fuzzing Session}
+\section{Fuzzing Session}
 \pname{} constitutes two intertwined components that work together in providing a guided fuzzing approach to find web application vulnerabilities. The first
 component is the instrumentation of the target web application, that provides feedback to the fuzzer on which basic blocks were visited so as to deduce if new control paths have been discovered. For the instrumentation process, \pname{} adopts similar techniques to how AFL instruments binaries but in our case we adapted them to work in web applications. 
 
