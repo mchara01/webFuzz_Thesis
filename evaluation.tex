@@ -3,60 +3,62 @@
 \minitoc
 \vspace*{1cm}
 
-This chapter examines the evaluation of \pname{} against other black-box vulnerability scanners. We begin by describing in detail the methodology used to evaluate our tool and explain the automated bug injection process on our fuzz targets. Then, we discuss the details of the evaluation such as the metrics that are going to be used. Finally, we proceed in reviewing the results of each metric used.
+This chapter examines the evaluation of \pname{} against other black-box vulnerability scanners. We begin by describing in detail the methodology used to evaluate our tool and explain the \emph{automated bug injection} process on the fuzz targets. Then, we discuss the details of the evaluation such as the metrics to be deployed. Finally, we proceed in reviewing the results of each metric used.
 
 % NEW SECTION
 \section{Methodology}
 \label{sec:dockerStack}
-In the evaluation of our tool, for convenience, we opted to use Docker ~\cite{docker_def}, which was discussed in Chapter ~\ref{sec:background}. Docker is software that can package your application, its dependencies, system tools, system libraries and settings in a single comprehensive virtual container. This is because Docker is lightweight, portable and can improve application development and deployment considerably.
+In the evaluation of our tool, for convenience, we opted to use Docker ~\cite{docker_def}, which was discussed in Chapter ~\ref{sec:background}. Docker is software that can package your application, its dependencies, system tools, system libraries and settings in a single comprehensive virtual container. This is because Docker is lightweight, portable and can considerably improve application development and deployment.
 
-As already mentioned in Chapter ~\ref{sec:architecture}, \pname{} is limited to web applications written in PHP. The most popular and widely deployed language for Web applications is undoubtedly PHP, powering more than 80\% of the top ten million websites and contributing to almost 140,000 open-source projects on GitHub ~\cite{githubinfo}. Also, in the server-side technologies category, PHP – the most prevalent server-side language – was associated with the highest number of vulnerabilities in 2019 ~\cite{vulnerabilities2019state}. For this reasons, we decided to evaluate our tool on web-apps developed in PHP.
+As mentioned in Chapter ~\ref{sec:architecture}, \pname{} is limited to web applications written in PHP. The most popular and widely deployed language for Web applications is undoubtedly PHP, powering more than 80\% of the top ten million websites and contributing to almost 140,000 open-source projects on GitHub ~\cite{githubinfo}. Also, in the server-side technologies category, PHP – the most prevalent server-side language – was associated with the highest number of vulnerabilities in 2019 ~\cite{vulnerabilities2019state}. For these reasons, we decided to evaluate our tool on web-apps developed in PHP.
 
-The first web application we tested our tool on was WordPress. The WordPress CMS (Content Management System) ~\cite{docker_def} is among the most popular open-source web application for managing and publishing content on the web with nearly half of the top 1 million sites on the internet using it ~\cite{cmsusage}. While it powers more than a third of the web, what was more important for us, is that it is written in PHP and widely used for building a variety of websites, ranging from simple blog spots to professional news sites. This would make the results of our experiment representative over a wider cross-section of websites. WordPress was not only the most popular platform but also dominated the number of new vulnerabilities in 2019 ~\cite{vulnerabilities2019state}. Unsurprisingly, 97.2\% of WordPress vulnerabilities were related to plugins. The most common WordPress vulnerability by far was XSS with 44.6\%. 
+The first web application we tested our tool on was WordPress. The WordPress CMS (Content Management System) ~\cite{docker_def} is among the most popular open-source web application for managing and publishing content on the web with nearly half of the top 1 million sites on the internet using it ~\cite{cmsusage}. While WordPress powers more than a third of the web, what was more important for us, is that it is written in PHP and widely used for building a variety of websites, ranging from simple blog spots to professional news sites. This means the results of our experiment represent a wider cross-section of websites. WordPress was not only the most popular platform but also dominated the number of new vulnerabilities in 2019 ~\cite{vulnerabilities2019state}. Unsurprisingly, 97.2\% of WordPress vulnerabilities were related to plugins. The most common WordPress vulnerability by far was XSS with 44.6\%. 
 
-We tested our tool on a second web application, Drupal CMS ~\cite{drupal}. Drupal is a free and open-source content-management framework written in PHP and distributed under the GNU General Public License. It is used as a backend framework for at least 2.1\% of all Web sites worldwide ranging from personal blogs to corporate, political, and government sites.
+We tested our tool on a second web application, Drupal CMS ~\cite{drupal}. Drupal is a free and open-source content-management framework written in PHP and distributed under the GNU General Public License. It is used as a backend framework for at least 2.1\% of all Web sites worldwide ranging from personal blogs to corporate, political, and government sites. To generate additional evidence-based data another two web applications were used - Firefly-III, Mautic - for the code coverage experiment (Table ~\ref{coverage_table}).
 
-Using Docker, and its docker-compose functionality, we were able to achieve a multi-container deployment through a single docker-compose YAML file for the following services:
+Using Docker and its docker-compose functionality, we were able to achieve a multi-container deployment through a single docker-compose YAML file for the following services:
 
 \begin{itemize}
-	\item \emph{NGINX}: An open-source, high-performance HTTP server which handles all the HTTP request made by \pname{} and forwarded to our WordPress or Drupal web applications.{~\cite{nginx}}
-	\item \emph{WordPress and Drupal}: Both open-source CMS web application. Since having access to the code, we began by examining the existing system in terms of injecting bugs and performing our \emph{instrumentation}.
-	\item \emph{MariaDB}: A popular open source relational databases which we used to store and manipulate the WordPress data~\cite{mariadb}.
+	\item \emph{NGINX}: An open-source, high-performance HTTP server that handles all the HTTP request made by \pname{} and forwarded to our running web applications {~\cite{nginx}}.
+	\item \emph{WordPress, Drupal, Firefly-III and Mautic}: Open-source CMS web applications. Having access to their code, we began examining the existing systems in terms of injecting bugs and performing our \emph{instrumentation}.
+	\item \emph{MariaDB}: A popular open-source relational databases we used to store and manipulate the WordPress data ~\cite{mariadb}.
 \end{itemize}
 
-The official images for the above services are free at Docker Hub. An illustration of the above infrastructure for WordPress, can be viewed in Figure ~\ref{fig:multi-container}. Files and instructions for replicating this process can be found at the fuzzer's repository. The respective docker-compose can be seen in Appendix ~\ref{sec:appendixb}.
+The official images for the above services are free at Docker Hub. An illustration of the above infrastructure for WordPress is in Figure ~\ref{fig:multi-container}. Files and instructions for replicating this process are in the fuzzer's repository. The respective docker-compose is in Appendix ~\ref{sec:appendixa}.
 
 \begin{figure}[ht]
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/multi-container.png}
- \caption[Multi-Container Deployment of WordPress using Docker]{\textit{Evaluation followed Multi-Container Deployment of WordPress using Docker}}
+ \caption[Multi-container deployment of WordPress using Docker]{\textit{Evaluation followed multi-container deployment of WordPress using Docker}}
  \label{fig:multi-container}
 \end{figure}
 
 \section{Automated Vulnerability Addition}\label{sec:automated}
-Evaluating fuzzing processes proved to be a challenging task ~\cite{klees2018Evaluation}. Migrating known vulnerabilities to existing software, to test the fuzzer's capabilities in detecting bugs, can be a tedious process ~\cite{bug-reproduction}. For evaluating \pname{}, but also other fuzzers for web applications, an automated bug injection tool named {\tt Centaur}, inspired by LAVA ~\cite{dolan2016lava} was used for automatically injecting bugs in web applications written in PHP. 
+Evaluating fuzzing processes proved to be a challenging task ~\cite{klees2018Evaluation}. Migrating known vulnerabilities to existing software, to test the fuzzer's capabilities in detecting bugs can be a tedious process ~\cite{bug-reproduction}. For evaluating \pname{}, and other fuzzers for web applications, an \emph{automated bug injection} tool named {\tt Centaur}, inspired by LAVA ~\cite{dolan2016lava} was used for automatically injecting bugs in web applications written in PHP. 
 
-Injecting vulnerabilities in web code was a demanding task, since the necessary tools for analysing native code and injecting vulnerabilities (\eg taint-tracking and information-flow frameworks), are not available for web applications. 
+Injecting vulnerabilities in web code was a demanding task, since the necessary tools for analysing \emph{native code} and injecting vulnerabilities (\eg taint-tracking and information-flow frameworks), are not available for web applications. 
 
-To overcome the lack of available tools, the vulnerability injection methodology \textit{Centaur} uses, leverages the \emph{instrumentation} infrastructure we used for building \pname{}. The automated bug-injection method is able to inject hundreds of common vulnerabilities such as Reflected Cross-Site Scripting in reasonable time. Details about the automated vulnerability addition (\textit{Centaur}), like the \emph{instrumentation}, are not in the scopes of this thesis.
+To overcome the lack of available tools, {\tt Centaur} uses vulnerability injection methodology to leverage the \emph{instrumentation} infrastructure. The automated bug-injection method can inject hundreds of common vulnerabilities such as Reflected Cross-Site Scripting in reasonable time. 
 
 \section{Evaluation Details}
-For the evaluation of \pname{}'s performance we used two Ubuntu 18.04 LTS Linux machines both possessing a 3.20 GHz quad-core Intel® Xeon® W-2104 Processor and 64GB of RAM. Targeted web applications consist of (a) an instrumented WordPress 5.5.1 with artificial bugs (b) a vanilla  WordPress 5.5.1 with artificial bugs, and (c) an instrumented Drupal 9.0.6. The term vanilla refers to web-apps in their original form, with no customization or frameworks added to them. 
+To evaluate \pname{}'s performance we used two Ubuntu 18.04 LTS Linux machines both possessing a 3.20 GHz quad-core Intel® Xeon® W-2104 Processor and 64 GB of RAM. Targeted web applications consist of (a) an instrumented WordPress 5.5.1 with artificial bugs, (b) a vanilla  WordPress 5.5.1 with artificial bugs, (c) an instrumented Drupal 9.0.6 (d) an instrumented Firefly-III 5.4.6, and (e) an instrumented Mautic 3.0. The term vanilla refers to web-apps in their original form, with no customization or frameworks added to them. 
 
 All artificial bugs were created with the automated vulnerability injection tool mentioned in  Section ~\ref{sec:automated}. Using this methodology, we managed to inject 150 identical Reflected Cross-Site Scripting bugs successfully in both the instrumented and vanilla versions of WordPress. Lastly, the Docker Stack of services described in Section ~\ref{sec:dockerStack} was deployed to run the aforementioned web applications.
 
-For evaluating the performance of \pname{}, the following metrics were used:
+For evaluating the performance of \pname{}, the following metrics were used in order of importance:
 \begin{itemize}
 	\item \emph{Vulnerabilities Detected}: Number of Reflected Cross-Site Scripting bugs reported
 	\item \emph{Global Code Coverage}: Accumulated coverage score of the web application's code
 	\item \emph{Throughput}: Requests made per second
 \end{itemize}
 
-To compare the Vulnerabilities Detected and the Throughput of \pname{} against other black-box fuzzers we used Wfuzz ~\cite{wfuzz}, Burp Suite Professional ~\cite{burp} and OWASP ZAP ~\cite{ owaspzap}. All three of these tools are considered essential in any penetration tester's arsenal as they are included by default in Kali Linux and widely used in Capture The Flag competitions such as DEF CON. Other tools; such as \emph{nikto}, \emph{w3af}, \emph{skipfish} and \emph{wapiti} were also used during the evaluation phase but as they were not able to uncover any real or artificially injected bugs we opted not to include them in our final evaluation. The main comparison was made against Wfuzz due to the ease of operation and to extend. The choice of Wfuzz as the main comparison of our tool is further elaborated on in Chapter ~\ref{sec:discussion}.
+To compare the Vulnerabilities Detected and the Throughput of \pname{} against other black-box fuzzers we used Wfuzz ~\cite{wfuzz}, Burp Suite Professional ~\cite{burp} and OWASP ZAP ~\cite{ owaspzap}. All three of these tools are considered essential in any penetration tester's arsenal as they are included by default in Kali Linux and widely used in Capture The Flag competitions such as GoogleCTF. Other tools; such as {\tt nikto}, {\tt w3af}, {\tt skipfish} and {\tt wapiti} were also used during the evaluation phase but as they were not able to uncover any real or artificially injected bugs we opted not to include them in our final evaluation. The main comparison was made against Wfuzz due to the ease of operation and to extend. The choice of Wfuzz as the main comparison of our tool is further elaborated on in Chapter ~\ref{sec:discussion}.
 
-\section{Vulnerabilities Detected}
-To evaluate how well \pname{} performs in terms of bug detection, we injected 150 artificial  Reflected Cross-site bugs with the methodology we discussed in Section ~\ref{sec:automated} and 4 real Reflected Cross-site Scripting bugs to the instrumented version of WordPress, and tested how 3 well-known black-box fuzzers performed in comparison with \pname{}. The real-life RXSS bugs were found from CVE ~\cite{cve} and have the following ids: CVE-2018-7280, CVE-2019-11843, CVE-2020-7104, CVE-2020-7107.
+\section{Evaluated Metrics}
+
+\subsection{Vulnerabilities Detected}
+To evaluate how well \pname{} performs in terms of bug detection, we injected 150 artificial  Reflected Cross-site bugs with the methodology we discussed in Section ~\ref{sec:automated} and 4 real Reflected Cross-site Scripting bugs to the instrumented version of WordPress and tested how 3 well-known black-box fuzzers performed in comparison with \pname{}. The real-life RXSS bugs were found from CVE ~\cite{cve} and have the following ids: CVE-2018-7280, CVE-2019-11843, CVE-2020-7104, CVE-2020-7107.
 
 \begin{table}[ht]
 \centering
@@ -76,44 +78,45 @@ To evaluate how well \pname{} performs in terms of bug detection, we injected 15
  \hline
  \end{tabular}
  \captionsetup{justification=centering}
- \caption[Vulnerability detection summary]{\textit{Summary of the vulnerability detection evaluation with the findings of 4 fuzzers including \pname{}. The WordPress web-app included 4 RXSS bugs found from CVE and 150 artificial RXSS bugs injected manually.}}
+ \caption[Vulnerability detection summary]{\textit{Summary of the vulnerability detection evaluation with the findings of 4 fuzzers including \pname{}. The WordPress web-app included 4 RXSS bugs found from CVE and 150 artificial RXSS bugs injected manually}}
 
  \label{tools_table}
 \end{table}
 
-When analysing the specifics of the four real-life RXSS vulnerabilities that where manually injected, it was realised that CVE-2019-11843 depends on JavaScript code to create its triggering link dynamically in the form of an anchor element. Also, for the vulnerability CVE-2018-7280 to be triggered it is compulsory for the XSS payload to be injected inside a specific JSON object at one of the vulnerable form's parameters. The other three depend on JavaScript code to dynamically append the vulnerable POST parameter upon form submission. 
+When analysing the specifics of the four real-life RXSS vulnerabilities manually injected, it was realised that CVE-2019-11843 depends on JavaScript code to create its triggering link dynamically in the form of an {\tt anchor} element. Also, for the vulnerability CVE-2018-7280 to trigger it is compulsory for the XSS payload to be injected inside a specific JSON object at one of the vulnerable {\tt form}'s parameters. The other three depend on JavaScript code to dynamically append the vulnerable POST parameter upon {\tt form} submission. 
 
-The real RXSS bug that all tools where able to detect was CVE-2020-7107. This bug was related to the Ultimate FAQ plugin for WordPress and more specifically, the HTML code generated by the FAQ shortcode (WordPress-specific code that lets you do complex things with little effort) did not sanitise the Display-FAQ GET parameter, leading to the unauthenticated RXSS issue on pages where such shortcode is used. This vulnerability was fixed by the plugin developers by sanitizing the GET parameter with the {\tt intval()} function. 
+The real RXSS bug that all four tools were able to detect was CVE-2020-7107. This bug was related to the Ultimate FAQ plugin for WordPress. More specifically, the HTML code generated by the FAQ shortcode (WordPress-specific code that simplifies complex commands) did not sanitise the Display-FAQ GET parameter, leading to the unauthenticated RXSS issue on pages where such shortcode is used. This vulnerability was fixed in a later version (1.8.30) of the plugin by sanitizing the GET parameter with the {\tt intval()} function. 
 
-As Table ~\ref{tools_table}, all tools involved in the evaluation only managed to find one real-life RXSS bug. This is because none of them employ complex enough JavaScript code analysis nor do they run a request's client-side code so as to uncover these dynamic links and parameters.
+As Table ~\ref{tools_table} shows, all tools involved in the evaluation only managed to find one real-life RXSS bug. This is because none of them employs complex enough JavaScript code analysis nor do they run a request's client-side code to uncover these dynamic links and parameters.
 
-At this point, it is important to note that vulnerability scanners such as Burp Suite Professional provide a Proxy service that can intercept web browsing traffic so that requests created dynamically by client-side code can be fuzzed as well. Nevertheless, we chose to avoid these kinds of features since \pname{} currently lacks this functionality and thus, it would be an unfair comparison.
+It is important to note that vulnerability scanners such as Burp Suite Professional provide a Proxy service that can intercept web browsing traffic so that requests created dynamically by client-side code can be fuzzed as well. Nevertheless, we chose to avoid these features since \pname{} currently lacks this functionality and thus, it would be an unfair comparison.
 
-As we can clearly observe from Table ~\ref{tools_table}, results of all fuzzers for real-life bugs are disappointing. For this reason, we further evaluated the fuzzing tools on how well they perform with artificially injected bugs (Section ~\ref{sec:automated}). Because OWASP ZAP and Burp Suite Professional do not generate the required format of injection payloads unless advanced features and modifications are in place, they were unable to detect any of the artificially injected bugs. Using their advanced features requires extensive research and training as the learning curve is steep, hence we only customised Wfuzz.
+As clearly observed in Table ~\ref{tools_table}, the results of all fuzzers for real-life bugs are disappointing. For this reason, we further evaluated the fuzzing tools on how well they perform with artificially injected bugs (Section ~\ref{sec:automated}). Because OWASP ZAP and Burp Suite Professional do not generate the required format of injection payloads unless advanced features and modifications are in place, they were unable to detect any of the artificially injected bugs. Using their advanced features requires extensive research and training. As the learning curve is steep, we decided to only customise Wfuzz.
 
-To make a fair comparison of the vulnerability detecting capabilities of \pname{} and Wfuzz, some modifications were made to the latter since originally the tool was meant to be a brute forcer and not a black-box fuzzer. Firstly, an independent crawling process was added at the start to infer the control flow of the web application. The findings are stored and fed to Wfuzz as a list of fuzz targets. Utilising the Python module version of Wfuzz, a Python script was created that fuzzes the list of links found by the crawler, indefinitely. Payloads used during the fuzzing process are customised to resemble the mutated payloads that \pname{} uses. They consist of random strings, HTML syntax tokens, and random numbers all concatenated with the same XSS payloads that webFuzz uses from its corpus described in Chapter ~\ref{sec:architecture}.
+For a fair comparison of the vulnerability detecting capabilities of \pname{} and Wfuzz, some modifications were made to the latter since originally the tool was meant to be a simple brute-forcer and not a black-box fuzzer. An independent crawling process was added at the start to infer the control flow of the web application. 
+
+The findings are stored and fed to Wfuzz as a list of fuzz targets. Utilising the Python module version of Wfuzz, a Python script was created that fuzzes the list of links found by the \emph{crawler}, indefinitely. Payloads used during the fuzzing process are customised to resemble the mutated payloads that \pname{} uses. They consist of random strings, HTML syntax tokens, and random numbers all concatenated with the same XSS payloads that webFuzz uses from its corpus described in Chapter ~\ref{sec:architecture}.
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_bugs.pdf}
   \captionsetup{justification=centering}
-  \caption[Number of artificial XSS bugs uncovered by \pname{} and Wfuzz]{\textit{Artificial Reflected Cross-Site Scripting bugs detected over time by \pname{} and Wfuzz. \pname{} manages to uncover more bugs quicker during the fuzzing process.}} 
+  \caption[Number of artificial XSS bugs uncovered by \pname{} and Wfuzz]{\textit{Artificial Reflected Cross-Site Scripting bugs detected over time by \pname{} and Wfuzz. \pname{} manages to uncover more bugs quicker during the fuzzing process}} 
   \label{fig:plot_rxss}
 \end{figure}
 
-The results of our 65-hour experiment, comparing Wfuzz and \pname{} in terms of artificial RXSS bugs found can be seen in Figure ~\ref{fig:plot_rxss}. Although \pname{} has the lead through the entire experiment, the difference decreased until the end when it became marginal. \pname{} uncovered 30 artificial bugs, two more than the Wfuzz's 28.
+The results of our 65-hour experiment, comparing Wfuzz and \pname{} in terms of artificial RXSS bugs found is seen in Figure ~\ref{fig:plot_rxss}. Although \pname{} leads throughout the entire experiment, the difference decreased until the end when it became marginal. \pname{} uncovered 30 artificial bugs, two more than the Wfuzz's 28.
 
-By taking advantage of the \emph{instrumentation feedback loop}, \pname{} could detect the artificial bugs faster than Wfuzz's brute force approach. Whenever a digit of a magic
-number, situated in a vulnerable payload, is guessed correctly our fuzzing tool will detect this change and prioritize the request that causes it. 
+By taking advantage of the \emph{instrumentation feedback loop}, \pname{} detected the artificial bugs faster than Wfuzz's brute force approach. Whenever a digit of a \emph{magic number}, situated in a vulnerable payload, is guessed correctly, our fuzzing tool will detect this change and prioritize the request that causes it. 
 
-Using this method, finding a magic number is done in an incremental fashion - one correct digit at a time - which is much faster than guessing the whole number at once like Wfuzz does. As a real world analogy, each digit of the magic number can represent one correct mutation that brings us closer to the vulnerable basic block. A reason for the gradual decrease of webFuzz's detection performance lies in its growing request queue size. WordPress is composed out of approximately half a million LoC, with 48,040 basic blocks instrumented in total.
+With this method, finding a \emph{magic number} is done incrementally - one correct digit at a time - which is much faster than guessing the whole number at once like Wfuzz does. As a real-world analogy, each digit of the \emph{magic number} can represent one correct mutation that brings us closer to the vulnerable basic block. A reason for the gradual decrease of webFuzz's detection performance lies in its growing request queue size. WordPress is composed of approximately half a million LoC, with 48,040 basic blocks instrumented in total.
 
-\section{Global Code Coverage}
-Utilizing the \emph{instrumentation} feedback, \pname{} has calculated the Global Code Coverage for WordPress, Drupal, Firefly-III and Mautic. For these four PHP open-sourced projects we decided to test only the authenticated session scenarios as the unauthenticated session would prevent us accessing various links such as the administrative dashboard related links. In Figure ~\ref{fig:plot_coverage}, we can see how the aforementioned metric changed over time in the four authenticated session scenarios.
+\subsection{Global Code Coverage}
+Utilizing the \emph{instrumentation} feedback, \pname{} has calculated the global code coverage for WordPress, Drupal, Firefly-III and Mautic. For these four PHP open-sourced projects, we decided to test only the authenticated session scenarios as the unauthenticated session would prevent us from  accessing various links such as the administrative dashboard related links. In Figure ~\ref{fig:plot_coverage}, we see how the metric changed over time in the four authenticated session scenarios.
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage.pdf}
   \captionsetup{justification=centering}
-  \caption[Accumulated global code coverage using \pname{}]{\textit{Four different execution scenarios and the accumulated code coverage gained over time. Exponential increases at the start of the experiment are due to the initial exploration of the target web application's site map by the crawler.}} 
+  \caption[Accumulated global code coverage using \pname{}]{\textit{Four different execution scenarios and the accumulated code coverage gained over time. Exponential increases at the start of the experiment are due to initial exploration of the target web application's site map by the crawler}} 
   \label{fig:plot_coverage}
 \end{figure}
 
@@ -140,34 +143,34 @@ Utilizing the \emph{instrumentation} feedback, \pname{} has calculated the Globa
  \label{coverage_table}
 \end{table}
 
-Our experiment show that the two main web applications of our evaluation, Drupal and WordPress, accrued the most basic-block coverage with \emph{27.3\%} and \emph{21.5\%} respectively. Firefly-III was stopped after 1.3 days as the coverage remain static at \emph{9.7\%} during the entire time. In the case of the fourth fuzz target Mautic, we agreed to terminate this test early (0.7 days) as the throughput was arduously slow in order to reach a desired level of code coverage within a reasonable timeframe (see Table ~\ref{coverage_table}). 
+Our experiment showed the two main web applications of our evaluation, Drupal and WordPress accrued the most basic-block coverage with \emph{27.3\%} and \emph{21.5\%} respectively. Firefly-III was stopped after 1.3 days as the coverage remained static at \emph{9.7\%} during the entire time. In the case of the fourth fuzz target Mautic, we agreed to terminate this test early (0.7 days) as the throughput was arduously slow in reaching the desired level of code coverage within a reasonable time limit (see Table ~\ref{coverage_table}). 
 
-An important thing to note here is that the code coverage achieved by \pname{} in both the Drupal and WordPress scenarios indicate a steady rise in the global code coverage even after 6000 minutes of execution time. A good signal that the mutation functions used are effective enough to trigger new code paths, even after the crawling process has finished. 
+More importantly, the code coverage achieved by \pname{} in both the Drupal and WordPress scenarios indicate a steady rise in the global code coverage even after 6000 minutes of execution time. An encouraging signal that the mutation functions used are effective enough to trigger new code paths, even after the crawling process has finished. 
  
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_coverage2.pdf}
   \captionsetup{justification=centering} 
-  \caption[Accumulated global code coverage using Wfuzz]{\textit{Code coverage achieved by Wfuzz over time when fuzzing WordPress using an authenticated session. After running for approximately 5000 minutes (3.5 days) the code coverage remained stagnant at 14.6\% for the rest of the experiment.}}
+  \caption[Accumulated global code coverage using Wfuzz]{\textit{Code coverage achieved by Wfuzz over time when fuzzing WordPress using an authenticated session. After running for approximately 5000 minutes (3.5 days) the code coverage remained stagnant at 14.6\% for the rest of the experiment}}
   \label{fig:plot_coverage2}
 \end{figure}
 
-In Figure ~\ref{fig:plot_coverage2} we can see the Global Code Coverage achieved by a black-box fuzzer, Wfuzz, when fuzzing WordPress using an authenticated session. The peak of this experiment was reached in roughly \emph{3.5} days (5000 minutes) when code coverage of \emph{14.613\%} was reached. This experiment was done solely to check how well a black-box fuzzer performs in terms of code coverage against a gray-box fuzzer, like \pname{}, that leverages \emph{instrumentation} feedback. 
+In Figure ~\ref{fig:plot_coverage2} we can see the Global Code Coverage achieved by the black-box fuzzer Wfuzz when fuzzing WordPress using an authenticated session. The peak of this experiment was reached in roughly \emph{3.5} days (5000 minutes) when code coverage of \emph{14.613\%} was reached. This experiment was solely to check how well a black-box fuzzer performs in terms of code coverage against a grey-box fuzzer, like \pname{}, that leverages \emph{instrumentation} feedback. 
 
-When looking at both Figures ~\ref{fig:plot_coverage} and ~\ref{fig:plot_coverage2} we can safely surmise that the \emph{instrumentation} feedback provides \pname{} the edge needed to surpass the performance of Wfuzz. More precisely, when both were fuzzing WordPress with an authenticated session, \pname{} managed to get almost \emph{1.5} times higher code coverage than Wfuzz. Wfuzz was left running for a much longer time than \pname{} but with no luck since it stayed stagnant on the score it achieved in 3.5 days at \emph{14.613\%}.
+When looking at Figures ~\ref{fig:plot_coverage} and ~\ref{fig:plot_coverage2}, we can safely surmise that the \emph{instrumentation} feedback provides \pname{} with the edge needed to surpass the performance of Wfuzz. More precisely, when both were fuzzing WordPress with an authenticated session, \pname{} managed to get almost \emph{1.5} times higher code coverage than Wfuzz. Wfuzz was left running for a much longer time (10.4 days) than \pname{} with no luck since it stayed stagnant on the score it achieved after 3.5 days at \emph{14.613\%}.
 
-\section{Throughput}
+\subsection{Throughput}
 
 \begin{figure}[!htb]
   \centering \includegraphics[width=\linewidth]{figures/plot_throughput.pdf}
   \captionsetup{justification=centering}  
-  \caption[Throughput of \pname{} and Wfuzz when fuzzing Drupal and WordPress]{\textit{Requests made per second over time for three different scenarios. Both \pname{} and Wfuzz are evaluated on Drupal and WordPress. Wfuzz takes the lead with a difference.}} 
+  \caption[Throughput of \pname{} and Wfuzz when fuzzing Drupal and WordPress]{\textit{Requests made per second over time for three different scenarios. Both \pname{} and Wfuzz are evaluated on Drupal and WordPress. Wfuzz takes the lead with a difference}} 
   \label{fig:plot_throughput}
 \end{figure}
 
-One reason for the effectiveness of fuzzers in uncovering vulnerabilities is their capability to test vast amounts of inputs per second. It is essential that the overhead caused by \emph{instrumentation} does not severely degrade the web application's response time and the fuzzer's processing time for each request is kept as brief as possible.
+One reason for the effectiveness of fuzzers in uncovering vulnerabilities is their capability to test vast amounts of inputs per second. The overhead caused by \emph{instrumentation} must not severely degrade the web application's response time and the fuzzer's processing time for each request is kept as brief as possible.
 
-As observed in Figure ~\ref{fig:plot_throughput}, the black-box version of Wfuzz has about \emph{3} times higher throughput than \pname{} in the case of Drupal and \emph{4.5} times in WordPress. This is plausible as the overhead added from \emph{instrumentation} roughly doubles the page response time in the case of WordPress, and due to webFuzz's increased statefulness in tracking, analysing and ranking all the requests, it increases the per-request processing time.
+As observed in Figure ~\ref{fig:plot_throughput}, the black-box version of Wfuzz has about \emph{3} times higher throughput than \pname{} in the case of Drupal and \emph{4.5} times in WordPress. This is plausible as the overhead added from \emph{instrumentation} roughly doubles the page response time for WordPress, and due to webFuzz's increased statefulness in tracking, analysing and ranking all the requests, it increases the per-request processing time.
 
-After 2,048 minutes in WordPress using \pname{}, with an authenticated session established, the throughput plummets for a lengthy period. This implies that the fuzzer was stuck on fuzzing particular links that have lofty response times. The fact that the fuzzer keeps on fuzing these links means that they have have a high coverage score and mutating them is effective enough to trigger new code paths in them.
+After 2,048 minutes in WordPress using \pname{} with an authenticated session established, the throughput plummets for a lengthy period. This implies that the fuzzer was stuck on fuzzing particular links that have lofty response times. The fact our fuzzer keeps on fuzing these links mean they have a high coverage score and mutating them is effective enough to trigger new code paths.
 
-Looking at Figure ~\ref{fig:plot_throughput}, we can state with confidence that much has to be done to improve the throughput of \pname{}, since it is nowhere near that of native applications fuzzers such as AFL and EFS nor is it comparable to black-box web fuzzers such as Wfuzz. This was no more than expected as native applications have no need to address overhead from sending requests over a network. Needless to say, necessary improvements are discussed in Chapter ~\ref{sec:discussion}.
+Looking at Figure ~\ref{fig:plot_throughput}, we can state with confidence that much needs to be done to improve the throughput of \pname{}, since it is nowhere near that of native application fuzzers such as AFL and EFS nor is it comparable to black-box web fuzzers such as Wfuzz. That was no more than expected as native applications have no need to address overhead from sending requests over a network. Needless to say, the necessary improvements are discussed in the next chapter.

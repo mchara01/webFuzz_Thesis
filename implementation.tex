@@ -3,17 +3,17 @@
 \minitoc
 \vspace*{1cm}
 
-This chapter is dedicated to the technical aspects involved while exploring some of the key characteristics that constitute \pname{}. In depth, we look at the coding standards used when developing this fuzzing tool, exploiting Asynchronous I/O to achieve concurrency in Python, the parsing procedure of a response and a user-friendly interface displaying statistics. Additionally, we refer to other functionalities of \pname{} accompanied by useful information on how to operate our fuzzing tool.
+This chapter is dedicated to the technical aspects involved while also exploring some of the key characteristics that constitute \pname{}. In-depth, we look at the coding standards used when developing this fuzzing technique, exploiting Asynchronous I/O to achieve concurrency in Python, the parsing procedure of a response and a user-friendly interface displaying statistics. Additionally, we refer to other functionalities of \pname{} accompanied by useful information on how to operate our fuzzing tool.
 
 % NEW SECTION
 \section{Coding Standards}
-Guido van Rossum (creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, our aim was to write clean, readable and eye-pleasing code by following best practice that leading professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for good programming habits and standards. 
+Guido van Rossum (creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, we aimed to write clean, readable and eye-catching code by following best practice that leading professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for best programming habits and standards. 
 
-More specifically, our fuzzing tool is fully written in Python 3.8 using the PEP 8 ~\cite{python_pep8} coding style standard and, regarding documentation, the PEP 257 ~\cite{python_pep257} and Sphinx ~\cite{sphinx} docstring conventions were adopted for it to be clear and easy to read for programmers. Pylint ~\cite{pylint_module} was also used to check for errors in Python code and to implement the aforementioned coding standards and search for code smells.
+More specifically, our fuzzing tool is entirely written in Python 3.8 using the PEP 8 ~\cite{python_pep8} coding style standard and, regarding documentation, the PEP 257 ~\cite{python_pep257} and Sphinx ~\cite{sphinx} docstring conventions were adopted for it to be clear and easy to read for programmers. Pylint ~\cite{pylint_module} was also used to check for errors in Python code and to implement the aforementioned coding standards and search for code smells.
 
-To enhance good practise, unit tests were created through which individual modules of the tool's source code were put under different tests to determine a particular unit's correctness and whether it is fit for purpose. More precisely, parts of the application's code are validated by using test cases that stress-test the tool and ascertain the quality of the code by checking it against the expected response. For this part, popular python test frameworks were used like pytest ~\cite{pytest_module}, unittest ~\cite{unittest_module} and mock ~\cite{mock}.
+To enhance best practise, unit tests were created through which individual modules of the tool's source code were put under different tests to determine a particular unit's correctness and whether it is fit for purpose. More precisely, parts of the application's code are validated by using test cases that stress-test the tool and ascertain the quality of the code by checking it against the expected response. For this part, popular python test frameworks were used such as pytest ~\cite{pytest_module}, unittest ~\cite{unittest_module} and mock ~\cite{mock}.
 
-In Listing ~\ref{lst:parse_test}, an example of unit testing for the parser module can be found. More specifically it test the functionality of {\tt set\_default\_hostname()} in the aforementioned module, to check if it is the intended. This functions purpose is to turn any URL to its absolute version so various kinds of URLs are given along with their correct absolute value and then we check if all tests return a {\tt true} value.
+In Listing ~\ref{lst:parse_test}, an example of unit testing for the parser module can be found. It tests the functionality of {\tt set\_default\_hostname()} in the aforementioned module, to check if it is operating as intended. This function's purpose is to transform any URL to its absolute path so that various kinds of URLs are given with their correct absolute value to check if all tests return a {\tt true} value.
 
 \begin{lstlisting}[aboveskip=\baselineskip, showstringspaces=false, frame=single, language=Python, columns=flexible, keepspaces=true, caption={\textit{Unit test for method set\_default\_hostname()}}, numberstyle=\color{gray}, numbersep=5pt, label={lst:parse_test}]
 . . . 
@@ -31,13 +31,13 @@ def test_set_default_hostname(parser_setup, url_test, url_correct):
 
 % NEW SECTION
 \section{Asynchronous I/O}
-\pname{} utilises concurrent programming (see Section ~\ref{sec:background}) with the help of the asyncio ~\cite{asyncio} Python module. In our case, asyncio has made it possible to send, continuously, HTTP requests to the target website while at the same time statistics on the fuzzing session are printed on the user's screen and a respective log file is updated. With assistance from the aforementioned module, some of the potential speed-bumps that we might otherwise encounter; such as logging request information to a file or waiting idly for a response for each request, were overcome, since any I/O operation caused by a blocking function does not forbid others from running. Conversely, it allows other functionalities to run from the time that it starts until the time that it returns. 
+\pname{} utilises concurrent programming (see Section ~\ref{sec:background}) with the help of the {\tt asyncio} ~\cite{asyncio} Python module. In our case, {\tt asyncio} has made it possible to send, continuously, HTTP requests to the target website while at the same time statistics on the fuzzing session are printed on the user's screen and a respective log file is updated. With assistance from the module, potential speed-bumps that we might otherwise encounter; such as logging request information to a file or waiting idly for a response for each request, were overcome, since any I/O operation caused by a \emph{blocking} function does not forbid others from running. Conversely, it allows other functionalities to run from the time that it starts until the time that it returns. 
 
-Multiple asynchronous tasks (also known as routines) cooperate to let each one take turns running using the {\tt await} keyword, to yield optimal performance. This keyword enables tasks to pause while they wait for their results and let other tasks run in the meantime. This process is called cooperative multitasking and although it involves doing extra work up front, the benefit is that you always know when your task will be swapped out, thus optimising to yield better performance.
+Multiple asynchronous tasks (also known as routines) cooperate to let each one take turns running using the {\tt await} keyword, to yield optimal performance. This keyword enables tasks to pause while they wait for their results and let other tasks run in the meantime. This process is called \emph{cooperative multitasking} and although it involves doing extra work up front, the benefit is that you always know when your task will be swapped out, thus optimising to yield better performance.
 
-To summarise, the concept of asyncio is that a single-threaded Python object, called the event loop, controls how and when each task is run. Each task can either be in ready state, which means that the task has work to do and is ready to be run while the waiting state means the task is waiting for some external thing to finish, such as a network operation. The event loop is aware of each task and knows what state it is in and maintains two lists of tasks, one for each of these states. 
+To summarise, the concept of {\tt asyncio} is that a single-threaded Python object, called the event loop, controls how and when each task is run. Each task can either be in a ready state, which means that the task has work to do and is ready to be run while the waiting state means the task is waiting for some external thing to finish, such as a network operation. The event loop is aware of each task and knows what state it is in and maintains two lists of tasks, one for each of these states. 
 
-It selects one of the ready tasks and then returns it back to running. That task is in complete control until it cooperatively hands the control back to the event loop, which in turn places that task into either the ready or waiting list and chooses another task to run. It is important to note, that the tasks never give up control without intentionally doing so using {\tt await}, hence, they are never interrupted in the middle of an operation. A detailed depiction of the asynchronous process executed by asyncio can be viewed in Figure ~\ref{fig:asyncio_image_source}.
+It selects one of the ready tasks and then returns it back to running. That task is in complete control until it cooperatively hands the control back to the event loop, which in turn places that task into either the ready or waiting list and chooses another task to run. It is important to note, that the tasks never give up control without intentionally doing so using {\tt await}, hence, they are never interrupted in the middle of an operation. A detailed depiction of the asynchronous process executed by {\tt asyncio} can be viewed in Figure ~\ref{fig:asyncio_image_source}.
 
 \begin{figure}[ht]
  \centering
@@ -48,14 +48,14 @@ It selects one of the ready tasks and then returns it back to running. That task
  \label{fig:asyncio_image_source}
 \end{figure}
 
-Communication with the target's website is achieved with a rapidly fast asynchronous http client/server framework named aiohttp ~\cite{aiohttp}. The aiohttp module creates a reusable Session object per web application through which all requests are performed. Since our fuzzer works with one web application per execution, a single session is created, shared across all tasks, and reused for the entire execution of the program. The re-usability of the session is feasible because all tasks are running on the same thread. Pairing aiohttp with asyncio evidently speeds things up.
+Communication with the target's website is achieved with a rapidly fast asynchronous HTTP client/server framework named {\tt aiohttp} ~\cite{aiohttp}. The {\tt aiohttp} module creates a reusable Session object per web application through which all requests are performed. Since our fuzzer works with one web application per execution, a single session is created, shared across all tasks, and reused for the entire execution of the program. The re-usability of the session is feasible because all tasks are running on the same thread. Pairing {\tt aiohttp} with {\tt asyncio} evidently speeds things up.
 
-It is important to note here that not all available Python modules are compatible with asyncio. For our requests, we could not use the default and recommended Python requests package, since it is built on top of {\tt urllib3 }, which uses Python's http and socket modules. Socket operations are blocking and not  {\tt awaitable } which signals that Python will not like the {\tt await } statement. However, more modules are becoming compatible with asyncio ~\cite{aiohttp}.
+It is important to note here that not all available Python modules are compatible with {\tt asyncio}. For our requests, we could not use the default and recommended Python {\tt requests} package, since it is built on top of {\tt urllib3}, which uses Python's {\tt http} and {\tt socket} modules. Socket operations are \emph{blocking} and not {\tt awaitable} which signals that Python will not like the {\tt await} statement. It is recommended to avoid modules that are incompatible with {\tt asyncio} as the asynchronous framework will not operate at full capacity. However, more modules are becoming compatible with {\tt asyncio} ~\cite{aiohttp}.
 
-An example of an asynchronous method can be seen at Listing ~\ref{lst:asyncio_example}. This method is one of the most important in our tools as it constitutes the entry point to our fuzzer's execution. This method provides a simple print interface and not the heavy interface implemented with curses that we will see in the next section of this chapter. In this method are specified asynchronous tasks to run concurrently.
+An example of an asynchronous method is at Listing ~\ref{lst:asyncio_example}. The {\tt run\_simple()} method, is one of the most important in our toolbox as it constitutes the entry point to our fuzzer's execution. This provides a simple print interface and not the heavy interface implemented with {\tt curses} shown in the next section of this chapter. It specifies asynchronous tasks to run concurrently.
 
 \section{Parser}
-The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after, of course, the respective request is made. Each response contains the HTML document which is then parsed using the {\tt  Beautiful Soup } ~\cite{beautiful_soup} module to extract the form and anchor elements from it. These elements are useful as they can provide us with new URLs which translate into potentially new code paths and bugs to further explore and locate. 
+The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after, of course, the respective request is made. Each response contains the HTML document which is parsed using the {\tt Beautiful Soup} ~\cite{beautiful_soup} module to extract the {\tt form} and {\tt anchor} elements from it. These elements are useful as they can provide us with new URLs which translate into potentially new code paths and bugs to further explore and locate. 
 
 \begin{lstlisting}[aboveskip=\baselineskip, showstringspaces=false, frame=single, language=Python, columns=flexible, keepspaces=true, caption={\textit{Starting point for the fuzzer's execution using a simple print interface}}, numberstyle=\color{gray}, numbersep=5pt, label={lst:asyncio_example}]
 . . . 
@@ -81,13 +81,13 @@ async def run_simple(self, printToFile: bool) -> None:
      
 \end{lstlisting}
 
-When new URLs are found, they are added to the crawler's pending request list, if they are interesting (see Section ~\ref{sec:architecture}) they will also be fuzzed in the future. At this stage the HTML document is also checked for XSS vulnerabilities. The metadata that we stored for each request, can tell us which XSS payloads were injected into it and led to this vulnerability. If they happen to reside in the HTML document, which signal an RXSS vulnerability, a warning is triggered, incrementing the total number of XSS found and logging the related information. The document is also checked for Stored XSS vulnerabilities by scanning the document for all the XSS payloads that were injected in all the requests. A high-level pseudo-code for the parsing process can be seen at Algorithm ~\ref{alg:parser_pseudocode}. 
+When new URLs are found, they are added to the \emph{crawler}'s pending request list, if they are interesting they will be fuzzed in the future. At this stage, the HTML document is also checked for XSS vulnerabilities. The metadata stored for each request can tell us which XSS payloads were injected into it and led to the vulnerability. If they happen to reside in the HTML document, which signals an RXSS vulnerability, a warning is triggered, incrementing the total number of XSS found and logging the related information. The document is  checked for Stored XSS vulnerabilities by scanning the document for all the XSS payloads that were injected in all the requests. A high-level pseudocode for the parsing process can be seen in Algorithm ~\ref{alg:parser_pseudocode}. 
 
-As the pseudo-code shows clearly, parsing relies heavily on the urllib.parse~\cite{urllib_parse} Python module. This module, more precisely the urlparse method, is used for breaking the Uniform Resource Locator (URL) string up into components; such as the addressing scheme, network location, path \etc An object is returned that contains 6-item tuple with all the URL sub-fields. The reverse can also be achieved through the urlunparse method; a URL object can be converted into string.
+As the pseudocode shows clearly, parsing relies heavily on the {\tt urllib.parse} ~\cite{urllib_parse} Python module. To be exact, the urlparse method is used for breaking the Uniform Resource Locator (URL) string up into components; such as the addressing scheme, network location, path \etc An object is returned that contains a 6-item tuple with all the URL sub-fields. The reverse can also be achieved through the urlunparse method; a URL object can be converted into a string.
 
 \begin{algorithm}
  
- \caption{\textit{Parsing HTML documents method pseudocode}}
+ \caption{\textit{Parsing HTML documents pseudocode}}
  \label{alg:parser_pseudocode}
  
  \begin{algorithmic}
@@ -121,30 +121,29 @@ As the pseudo-code shows clearly, parsing relies heavily on the urllib.parse~\ci
 \end{algorithm}
 
 \section{Curses Interface}
-A Textual User Interface (TUI) for \pname{} was created using the curses module which contains information and essential statistics, gathered while our grey-box fuzzer is running. The curses library supplies a terminal-independent screen-painting and keyboard-handling facility for text-based terminals~\cite{curses}, such as the Linux console. The text editor \textit{nano} is a good example of a curses application. 
+A Textual User Interface (TUI) for \pname{} was created using the {\tt curses} module containing information and essential statistics, gathered while our grey-box fuzzer is running. The {\tt curses} library supplies a terminal-independent screen-painting and keyboard-handling facility for text-based terminals~\cite{curses}, such as the Linux console. The text editor \textit{nano} is a good example of a {\tt curses} application. 
 
-Unfortunately, this functionality is not available for Windows, as the Windows version of Python does not include the curses module. So by running our fuzzing tool on a Windows-based machine, regardless of the Command Line Interface (CLI) you opt to use, it will result in a crash. 
+Unfortunately, this functionality is not available for Windows, as the Windows version of Python does not include the {\tt curses} module. By running our fuzzing tool on a Windows-based machine, regardless of the Command Line Interface (CLI), you opt to use, it will result in a crash. 
 
-There are of course ways to run \pname{} without this interface which will be explained in the next sub-section. Although many may think this is obsolete technology, it can prove to be  valuable for Unix-based operating systems that do not provide any graphical support. The Python module, which is the one we utilised, is a fairly simple wrapper over the \textit{C} functions provided by the first and original curses. 
+There are of course ways to run \pname{} without this interface which will be explained in the next  section. Although many may think this is obsolete technology, it is valuable for Unix-based operating systems that do not provide any graphical support. The Python module, which is the one we utilised, is a fairly simple wrapper over the \textit{C} functions provided by the first and original {\tt curses}. 
 
-A snapshot of the interface provided by webFuzz can be seen in Figure ~\ref{fig:curses_interface}. As illustrated, the statistics are divided into three categories; namely the process statistics, the overall progress and the examining node details.
-As the fuzzing tool expands, more valuable information is expected to be included on the interface.
+A snapshot of the webFuzz interface is seen in Figure ~\ref{fig:curses_interface}. As illustrated, the statistics are divided into three categories; namely the process statistics, the overall progress and the examining node details. As the fuzzing tool expands more valuable information is added to the interface.
 
 \begin{figure}[ht]
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/curses.png}
  \caption[Interface of webFuzz]
- {\textit{Interface of webFuzz. The interface is implemented using the Curses module}}
+ {\textit{Interface of webFuzz is implemented using the Curses module}}
  \label{fig:curses_interface}
 \end{figure}
 
 \section{Interactive and Black-Box Functionalities}
-Our fuzzing tool also provides manual functionality. This allows the user to engage through an interactive session with our fuzzer. After the user provides the target to be fuzzed, a connection is established and the session begins. Before a request is made, forms are extracted from the target and all input fields are presented to the user. The user can choose from a menu of options on which fields to fuzz and how. More specifically, the options consist of filling the fields with manually inserted data, XSS payloads from the corpus seen in Table \ref{xss_payload_tables} or choosing to mutate data using a basic mutating function. 
+Our fuzzing tool also provides manual functionality. It allows the user to engage through an interactive session with our fuzzer. After the user provides the target to be fuzzed, a connection is established and the session begins. Before a request is made, forms are extracted from the target and all input fields are presented to the user. The user can choose from a menu of options on which fields to fuzz and how. More specifically, the options consist of filling the fields with manually inserted data, XSS payloads from the corpus seen in Table \ref{xss_payload_tables} or choosing to mutate data using a basic mutating function. 
 
-Mutating functions for a given input provided include deleting random characters, inserting characters at random places and flipping random characters. The user must insert manually any different link desired to be fuzzed, as no crawling process is provided. At Listing ~\ref{lst:interactive_mode}, we can see a code snippet of the interactive mode. 
+Mutating functions for a given input provided include deleting random characters, inserting characters at random places and flipping random characters. The user must insert manually any different link desired to be fuzzed, as no crawling process is provided. At Listing ~\ref{lst:interactive_mode}, is a code snippet of the interactive mode. 
 
-The user can switch at any time to a more automated, brute-forcing type session where input fields of the forms at the given fuzz target are filled with XSS payloads with no need of interruption from the user. This brings us to the black-box fuzzing capabilities also provided by our fuzzing tool. When choosing to fuzz in a black-box fashion, everything that we have mentioned still applies, as the core functionalities are shared between the two. The only aspect that is not taken into account with this approach, is of course, the \emph{instrumentation}.
+The user can switch at any time to a more automated, brute-forcing type session where input fields of the forms at the given fuzz target are filled with XSS payloads with no need of interruption from the user. This brings us to the black-box fuzzing capabilities also provided by our fuzzing tool. When choosing to fuzz in a black-box fashion, everything that we have mentioned still applies, as the core functionalities are shared between the two. The only aspect not taken into account with this approach, is, of course, the \emph{instrumentation}.
 
 This thesis only aims to demonstrate the capabilities of \pname{} as a grey-box fuzzer, therefore no rigorous testing was conducted to prove its efficacy. Thus, no further discussion is made on its interactive and black-box functionalities.
 
@@ -175,16 +174,16 @@ def fuzz():
 \end{lstlisting}
 
 \section{Running webFuzz}
-Running \pname{} is straightforward. All necessary modules accompanied with their exact version needed to be installed for \pname{} to operate smoothly. These are listed in a "requirements" text file which can be found at Appendix ~\ref{sec:appendixb}. Other executing and installing dependency instructions can be found at the README.md file in the tool's repository.
+Running \pname{} is straightforward. The necessary modules in their exact version are listed to be installed for webFuzz to operate smoothly. These are listed in a "requirements" text file which is in Appendix ~\ref{sec:appendixb}. Other executing and installing dependency instructions are at the README.md file in the tool's repository.
 
-A help menu that shows all available arguments in which \pname{} can run in, are shown in Figure ~\ref{fig:argparser_menu}. As you can see, arguments are separated in three categories; namely \emph{Optional}, \emph{Required} and \emph{Positional}. Optional arguments are extra functionalities that you do not have to include when running the tool, whereas Required and Positiona are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the argparse~\cite{argparse} Python module was used.
+A help menu that shows all available arguments in which \pname{} can run in are shown in Figure ~\ref{fig:argparser_menu}. As depicted, arguments are separated into three categories; namely \emph{Optional}, \emph{Required} and \emph{Positional}. \emph{Optional} arguments are extra functionalities that you do not have to include when running the tool, whereas \emph{Required} and \emph{Positional} are the arguments that must be included. For the creation of the usage menu and parsing the arguments, the {\tt argparse} ~\cite{argparse} Python module was used.
 
-Also, throughout the execution, logging is used as a means of tracking events that happen when the fuzzer runs. Logging is a module in the Python standard library that provides a richly-formatted log.
+Also, throughout the execution, {\tt logging} is used for tracking events that happen when the fuzzer runs. {\tt Logging} is a module in the Python standard library that provides a richly-formatted log.
 
 \begin{figure}[ht]
  \centering
  \captionsetup{justification=centering}
  \includegraphics[width=\linewidth]{figures/argparser_menu.jpg}
- \caption[\pname{} usage menu]{\textit{\pname{} usage menu includes all available arguments which we can use to run it}}
+ \caption[\pname{} usage menu]{\textit{\pname{} usage menu includes all available arguments needed to run it}}
  \label{fig:argparser_menu}
 \end{figure}

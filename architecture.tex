@@ -9,9 +9,9 @@ This chapter illustrates the general design of the fuzzer without going into too
 \pname{} constitutes two intertwined components that work together in providing a guided fuzzing approach to find web application vulnerabilities. The first
 component is the \emph{instrumentation} of the target web application that provides feedback to the fuzzer on which basic blocks were visited to deduce if new control paths have been discovered. For the \emph{instrumentation} process, \pname{} adopts similar techniques to how AFL instruments binaries but in our case, we adapted them to work in web applications. 
 
-The second component is the fuzzing application with its core functionalities responsible for sending requests from a dynamic request queue, reading their respective responses, parsing them to provide an informed decision on what the next request should be and displaying various statistics about the fuzzing session to the user. The fuzzer also features an inbuilt crawler that scans the HTML responses to detect anchor and form elements that can give new, unseen paths for the web application to explore.
+The second component is the fuzzing application with its core functionalities responsible for sending requests from a dynamic request queue, reading their respective responses, parsing them to provide an informed decision on what the next request should be and displaying various statistics about the fuzzing session to the user. The fuzzer also features an inbuilt \emph{crawler} that scans the HTML responses to detect {\tt anchor} and {\tt form} elements that can give new, unseen paths for the web application to explore.
 
-A regular fuzzing session using \pname{} is seen in Figure ~\ref{fig:architecture}. It displays the process from the point the request is sent, up to the stage where a response is received. A request can be produced in one of two ways; it can be in a mutated form of a previously made request which turned out to be interesting or as a new link discovered by the inbuilt crawler but has not been visited yet. When the response is received, it is parsed in order to extract the execution time, vulnerabilities it may have triggered, coverage score, and to record newly discovered links.
+A regular fuzzing session using \pname{} is seen in Figure ~\ref{fig:architecture}. It displays the process from the point the request is sent, up to the stage where a response is received. A request can be produced in one of two ways; it can be in a mutated form of a previously made request which turned out to be interesting or as a new link discovered by the inbuilt \emph{crawler} but has not been visited yet. When the response is received, it is parsed in order to extract the execution time, vulnerabilities it may have triggered, coverage score, and to record newly discovered links.
 
 \begin{figure}[ht]
  \centering
@@ -35,6 +35,15 @@ parameter types. Some parameters may get randomly opted out from the mutation pr
 That is useful in cases where certain parameters need to remain unchanged for designated areas of the program to execute. Unlike many fuzzers that employ malicious payload generation via the use of genetic algorithms, guided by an attack grammar ~\cite{duchene2014kameleonfuzz}, \pname{} chooses randomly from a corpus that consists of real-life known XSS payloads. The corpus was created with payloads found scattered across the internet, mainly in open-source repositories ~\cite{seclist,xsspayloadfirst,xsspayloadsecond}.
 
 A small sample of XSS payloads contained in the corpus can be viewed in Table ~\ref{xss_payload_tables}. Such payloads can further mutate by prepending or appending to them random strings or specific HTML, JavaScript and PHP syntax tokens. Generating payloads from scratch using complex algorithms may have zero false positives but, nevertheless, time-consuming.
+
+Although \emph{arrays} in URL strings are not clearly defined in RFCs with their format more framework-specific, some web applications rely on them or are oblivious to their existence. Therefore, an input type altering mutation was added where an input parameter expected to be parsed as a string in the web application transforms into an array or vice versa. Web applications not equipped to process unexpected types of input can be prone to glitches and bugs.
+
+Using evolutionary algorithms in the test case creation process is widely practised in fuzzers
+to optimize solution searching ~\cite{seal2016Genetic}, \pname{} will also mix GET or POST parameters from various favourable requests to generate new inputs. Contrary to how evolutionary algorithms work, crossing over of input is not defined as a necessary step in each new input creation but can happen with a medium probability.
+
+\section{Detecting Vulnerabilities}
+\pname{} is can detect Reflected and Stored Cross-Site Scripting(XSS) vulnerabilities, and subsequently, web applications that can be exploited for Distributed Denial of Service (DDoS) attacks. To detect such vulnerabilities we conducted a string-matching process for the injected, possibly malicious, payload in the returned HTML response. This method is more efficient in terms of speed, however, it can result in a high ratio of false positives, as the location of the payload in the response is unaccounted for. False positives did arise when the tool reported that an XSS was detected when in fact there was none. One example was when the XSS payload returned enclosed with double quotes inside an HTML element's attribute. If the web application correctly escapes any double-quotes found in the XSS payload it will no be executable. The plans to improve the efficiency of our XSS detection method are discussed in Chapter ~\ref{sec:discussion}.
+
 
 \begin{table}[ht]
 \centering
@@ -63,13 +72,3 @@ A small sample of XSS payloads contained in the corpus can be viewed in Table ~\
  \caption[Cross-Site Scripting payloads corpus]{\textit{Randomly selected XSS payloads from the corpus \pname{} uses during a fuzzing session. The corpus consists of thousands of payloads}}
  \label{xss_payload_tables}
 \end{table}
-
-Although \emph{arrays} in URL strings are not clearly defined in RFCs with their format more framework-specific, some web applications rely on them or are oblivious to their existence. Therefore, an input type altering mutation was added where an input parameter expected to be parsed as a string in the web application transforms into an array or vice versa. Web applications not equipped to process unexpected types of input can be prone to glitches and bugs.
-
-Using evolutionary algorithms in the test case creation process is widely practised in fuzzers
-to optimize solution searching ~\cite{seal2016Genetic}, \pname{} will also mix GET or POST parameters from various favourable requests to generate new inputs. Contrary to how evolutionary algorithms work, crossing over of input is not defined as a necessary step in each new input creation but can happen with a medium probability.
-
-\section{Detecting Vulnerabilities}
-\pname{} is can detect Reflected and Stored Cross-Site Scripting(XSS) vulnerabilities, and subsequently, web applications that can be exploited for Distributed Denial of Service (DDoS) attacks. To detect such vulnerabilities we conducted a string-matching process for the injected, possibly malicious, the payload in the returned HTML response. This method is more efficient in terms of speed, however, it can result in a high ratio of false positives, as the location of the payload in the response is unaccounted for.
-
-False positives did arise when the tool reported that an XSS was detected when in fact there was none. One example was when the XSS payload returned enclosed with double quotes inside an HTML element's attribute. If the web application correctly escapes any double-quotes found in the XSS payload it will no be executable. There are plans to improve the efficiency of our XSS detection method as discussed in Chapter ~\ref{sec:discussion}.

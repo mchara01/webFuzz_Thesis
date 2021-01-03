@@ -5,7 +5,7 @@
 
 In the introductory chapter to this thesis, we analyse what motivated us to explore grey-box fuzzing to begin a research project in this area. We further discuss related studies in the field of fuzzing, the contribution that our thesis makes to better understanding it while outlining the eight chapter topics that are addressed.
 
-This thesis is focused on the core functionalities of the fuzzing tool so we do not delve into details about the \emph{instrumentation} or the automate bug injection tool used during the evaluation in Chapter ~\ref{sec:evaluation}, as they are beyond the scope of our research.
+This thesis is focused on the core functionalities of the fuzzing tool so we do not delve into details about the \emph{instrumentation} or the \emph{automated bug injection} tool (Centaur) used during the evaluation in Chapter ~\ref{sec:evaluation}, as they are beyond the scope of our research.
 
 % NEW SECTION
 \section{Motivation}
@@ -25,21 +25,21 @@ Software testing plays a vital role in the software development cycle because wh
 
 Detecting bugs before they get exploited is a viable but demanding task. Mainly because bugs are triggered when an unexpected input is given to the program, something that is difficult to fully simulate through statically written unit tests. That is down to the fact unit tests usually revolve around expected inputs to test the intended functionality of code ~\cite{aschermann2019nautilus}.
 
-Although automated software testing has become a burgeoning field of research, it still has a long way to go, especially for web applications ~\cite{doupe2010johnny}. As the Internet infrastructure expands, much more of the software written in native code (pre-compiled program in the CPU's \emph{machine language}) is migrating to web applications. This process attracts many more malicious attacks on web applications. This predicates a strong need for the development of automated vulnerabilities scanners that target web applications.
+Although automated software testing has become a burgeoning field of research, it still has a long way to go, especially for web applications ~\cite{doupe2010johnny}. As the Internet infrastructure expands, much more of the software written in \emph{native code} (pre-compiled program in the CPU's \emph{machine language}) is migrating to web applications. This process attracts many more malicious attacks on web applications. This predicates a strong need for the development of automated vulnerabilities scanners that target web applications.
  
 % NEW SECTION REPHRASE
 \section{Related Work}
 Fuzzers recently developed try to optimize the fuzzing process by proposing different methodologies ~\cite{godefroid2012sage, stephens2016driller, rawat2017vuzzer, aschermann2019nautilus, aschermann2019redqueen, hoffman2020Was, osterlund2020parmesan}. 
 For example, most fuzzers take advantage of \emph{instrumentation} at the binary or source level. This is done by inserting code in the program to receive feedback when a code block is
 triggered so the fuzzer can adjust the generated inputs to improve code coverage. 
-Other fuzzing methodologies utilize symbolic/concolic execution for extracting useful information about the program, using that information to improve the input generation process ~\cite{Godefroid2008AutomatedWF,stephens2016driller,godefroid2005dart,godefroid2012sage}. However, all these fuzzers currently target finding vulnerabilities in native code while web applications - which do not run on native code - have more-or-less been neglected. A more detailed analysis is given in Chapter ~\ref{sec:relatedwork}.
+Other fuzzing methodologies utilize symbolic/concolic execution for extracting useful information about the program, using that information to improve the input generation process ~\cite{Godefroid2008AutomatedWF,stephens2016driller,godefroid2005dart,godefroid2012sage}. However, all these fuzzers currently target finding vulnerabilities in \emph{native code} while web applications - which do not run on \emph{native code} - have more-or-less been neglected. A more detailed analysis is given in Chapter ~\ref{sec:relatedwork}.
 
 Traditionally, fuzzers come under three categories; black-, white- or grey-box which are clearly defined for native applications. When it comes to web applications grey-box approaches have not been defined, so our mission was to produce a prototype process inspired by work done on native applications, more precisely AFL.
 
 \section{Contributions}
 In this thesis, \pname{} is proposed. It is a prototype grey-box fuzzing tool for web applications. Today, the only fuzzers available for web applications are developed to behave in a black-box fashion ~\cite{doupe2010johnny}. That is to say, they use brute force to bombard their targets with URLs that embed known web-attack payloads. There have been breakthroughs with white-box fuzzing also ~\cite{navex2018,Borges2018BaZINGAWF}, that combine static analysis and concolic testing with fuzzing.
 
-Unlike the Black-/White-box fuzzing approach, \pname{} initially instruments the targeted web application by adding code that tracks all control flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded in the web application's HTTP response using custom headers or outputted to a shared log file or memory region. Subsequently, the fuzzer sends requests to the target and analyses the responses to detect any interesting requests that would later help to improve the code coverage and as a result, trigger vulnerabilities embedded deep in the web application's code.
+Unlike the black-/white-box fuzzing approach, \pname{} initially instruments the targeted web application by adding code that tracks all control flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded in the web application's HTTP response using custom headers or outputted to a shared log file or memory region. Subsequently, the fuzzer sends requests to the target and analyses the responses to detect any interesting requests that would later help to improve the code coverage and as a result, trigger vulnerabilities embedded deep in the web application's code.
 
 The following contributions are made in this thesis:
 
