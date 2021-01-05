@@ -9,7 +9,7 @@ This chapter is dedicated to the technical aspects involved while also exploring
 \section{Coding Standards}
 Guido van Rossum (creator of the Python programming language) said; "Code is read much more often than it is written". For this reason, throughout this thesis, we aimed to write clean, readable and eye-catching code by following best practice that leading professional tools adhere to. In so doing, we applied the latest conventions, as recommended by the Python community to enforce maintainability, clarity, consistency, and generally, a foundation for best programming habits and standards. 
 
-More specifically, our fuzzing tool is entirely written in Python 3.8 using the PEP 8 ~\cite{python_pep8} coding style standard and, regarding documentation, the PEP 257 ~\cite{python_pep257} and Sphinx ~\cite{sphinx} docstring conventions were adopted for it to be clear and easy to read for programmers. Pylint ~\cite{pylint_module} was also used to check for errors in Python code and to implement the aforementioned coding standards and search for code smells.
+More specifically, our fuzzing tool is entirely written in Python 3.8 using the PEP 8 ~\cite{python_pep8} coding style standard and, regarding documentation, the PEP 257 ~\cite{python_pep257} and Sphinx ~\cite{sphinx} docstring conventions were adopted for it to be clear and easy to read for programmers. Pylint ~\cite{pylint_module} was also used to check for errors in Python code and to implement the aforementioned coding standards and search for \emph{code smells}.
 
 To enhance best practise, unit tests were created through which individual modules of the tool's source code were put under different tests to determine a particular unit's correctness and whether it is fit for purpose. More precisely, parts of the application's code are validated by using test cases that stress-test the tool and ascertain the quality of the code by checking it against the expected response. For this part, popular python test frameworks were used such as pytest ~\cite{pytest_module}, unittest ~\cite{unittest_module} and mock ~\cite{mock}.
 
@@ -52,10 +52,7 @@ Communication with the target's website is achieved with a rapidly fast asynchro
 
 It is important to note here that not all available Python modules are compatible with {\tt asyncio}. For our requests, we could not use the default and recommended Python {\tt requests} package, since it is built on top of {\tt urllib3}, which uses Python's {\tt http} and {\tt socket} modules. Socket operations are \emph{blocking} and not {\tt awaitable} which signals that Python will not like the {\tt await} statement. It is recommended to avoid modules that are incompatible with {\tt asyncio} as the asynchronous framework will not operate at full capacity. However, more modules are becoming compatible with {\tt asyncio} ~\cite{aiohttp}.
 
-An example of an asynchronous method is at Listing ~\ref{lst:asyncio_example}. The {\tt run\_simple()} method, is one of the most important in our toolbox as it constitutes the entry point to our fuzzer's execution. This provides a simple print interface and not the heavy interface implemented with {\tt curses} shown in the next section of this chapter. It specifies asynchronous tasks to run concurrently.
-
-\section{Parser}
-The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after, of course, the respective request is made. Each response contains the HTML document which is parsed using the {\tt Beautiful Soup} ~\cite{beautiful_soup} module to extract the {\tt form} and {\tt anchor} elements from it. These elements are useful as they can provide us with new URLs which translate into potentially new code paths and bugs to further explore and locate. 
+An example of an asynchronous method is at Listing ~\ref{lst:asyncio_example}. The {\tt run\_simple()} method, is one of the most important in our toolbox as it constitutes the entry point to our fuzzer's execution. This provides a simple print interface and not the heavy interface implemented with {\tt curses} shown later in this chapter. It specifies asynchronous tasks to run concurrently.
 
 \begin{lstlisting}[aboveskip=\baselineskip, showstringspaces=false, frame=single, language=Python, columns=flexible, keepspaces=true, caption={\textit{Starting point for the fuzzer's execution using a simple print interface}}, numberstyle=\color{gray}, numbersep=5pt, label={lst:asyncio_example}]
 . . . 
@@ -80,6 +77,9 @@ async def run_simple(self, printToFile: bool) -> None:
 . . .
      
 \end{lstlisting}
+
+\section{Parser}
+The fuzzer's parsing module is responsible for extracting vital information during the fuzzing process from each response received, after, of course, the respective request is made. Each response contains the HTML document which is parsed using the {\tt Beautiful Soup} ~\cite{beautiful_soup} module to extract the {\tt form} and {\tt anchor} elements from it. These elements are useful as they can provide us with new URLs which translate into potentially new code paths and bugs to further explore and locate. 
 
 When new URLs are found, they are added to the \emph{crawler}'s pending request list, if they are interesting they will be fuzzed in the future. At this stage, the HTML document is also checked for XSS vulnerabilities. The metadata stored for each request can tell us which XSS payloads were injected into it and led to the vulnerability. If they happen to reside in the HTML document, which signals an RXSS vulnerability, a warning is triggered, incrementing the total number of XSS found and logging the related information. The document is  checked for Stored XSS vulnerabilities by scanning the document for all the XSS payloads that were injected in all the requests. A high-level pseudocode for the parsing process can be seen in Algorithm ~\ref{alg:parser_pseudocode}. 
 

@@ -56,6 +56,8 @@ The above code is faulty for two reasons. First, knowing a username exists offer
 
 {\tt Exploit:} A victim is tricked into submitting a {\tt form} located in an attacker-controlled website. The malicious payload is designed to trigger the vulnerability found in the above login {\tt form} (Listing ~\ref{lst:vuln_login_sub}). As soon as the {\tt form} is submitted, the vulnerable login page is opened with the XSS script executed in it. When the victim tries to login, the XSS script can easily send the credentials to the attacker as well. 
 
+Another example of a vulnerable page is highlighted in Appendix ~\ref{sec:appendixc}. This presents a more complex scenario than the one shown in Listing ~\ref{lst:vuln_login_sub}, since a \emph{magic number} must be guessed first before entering a conditional branch to reach the XSS vulnerability.
+
 Defeating XSS attacks is not dissimilar to defending against other types of code injection.
 The input must be sanitized. User input containing HTTP code must be escaped or encoded to avoid its execution. System-wide measures such as Content Security Policy (CSP) ~\cite{csp_def} may be enabled to eliminate or mitigate XSS attacks. Nevertheless, flaws such as Buffer Overflows (CVE ranked 3 ~\cite{cve}) or Cross-Site Scripting issues comprise a majority of security incidents that malicious hackers exploit daily. 
 

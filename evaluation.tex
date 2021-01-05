@@ -44,7 +44,7 @@ To overcome the lack of available tools, {\tt Centaur} uses vulnerability inject
 \section{Evaluation Details}
 To evaluate \pname{}'s performance we used two Ubuntu 18.04 LTS Linux machines both possessing a 3.20 GHz quad-core Intel® Xeon® W-2104 Processor and 64 GB of RAM. Targeted web applications consist of (a) an instrumented WordPress 5.5.1 with artificial bugs, (b) a vanilla  WordPress 5.5.1 with artificial bugs, (c) an instrumented Drupal 9.0.6 (d) an instrumented Firefly-III 5.4.6, and (e) an instrumented Mautic 3.0. The term vanilla refers to web-apps in their original form, with no customization or frameworks added to them. 
 
-All artificial bugs were created with the automated vulnerability injection tool mentioned in  Section ~\ref{sec:automated}. Using this methodology, we managed to inject 150 identical Reflected Cross-Site Scripting bugs successfully in both the instrumented and vanilla versions of WordPress. Lastly, the Docker Stack of services described in Section ~\ref{sec:dockerStack} was deployed to run the aforementioned web applications.
+All artificial bugs were created with the automated vulnerability injection tool mentioned in  Section ~\ref{sec:automated}. Using this methodology, we managed to inject 150 identical Reflected Cross-Site Scripting bugs successfully in both the instrumented and vanilla versions of WordPress. Lastly, the Docker stack of services described in Section ~\ref{sec:dockerStack} was deployed to run the aforementioned web applications.
 
 For evaluating the performance of \pname{}, the following metrics were used in order of importance:
 \begin{itemize}
